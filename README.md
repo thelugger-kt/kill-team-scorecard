@@ -23,8 +23,12 @@ The expected URL is `https://thelugger-kt.github.io/kill-team-scorecard/`.
 
 ## URL state and OBS
 
-Each browser instance is independent. The current scorecard is encoded into the URL as query parameters, so refreshing preserves the state and OBS can read the same live URL without allowing another browser to change the game.
+Each game can use a shared room URL such as `?room=match-1`. The first browser becomes the host, and other browsers using the same room receive score changes live through a direct peer connection. The current scorecard is also encoded into the URL as query parameters, so each connected browser and OBS can expose the latest snapshot.
 
 The main parameters are `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftRemaining`, `rightRemaining`, `leftTeam`, `rightTeam`, `leftStart`, `rightStart`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`, `tp`, and `initiative`.
 
-Example: `https://thelugger-kt.github.io/kill-team-scorecard/?leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`
+Example room: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
+
+OBS read-only room: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1&view=obs`
+
+Example encoded state: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1&leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`
