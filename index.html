@@ -261,7 +261,7 @@
       </div>
     </section>
 
-    <div class="actions"><p class="credit">Made by <span>Shawn the Lugger</span></p><div class="action-buttons"><button id="new-room" class="reset-button" type="button">New room</button><button id="reset-game" class="reset-button" type="button">Reset game</button></div></div>
+    <div class="actions"><p class="credit">Made by <span>Shawn the Lugger</span></p><div class="action-buttons"><button id="new-game" class="reset-button" type="button">New game</button><button id="reset-game" class="reset-button" type="button">Reset game</button></div></div>
     <p id="error-message" class="error-message" role="alert"></p>
   </main>
 
@@ -278,9 +278,9 @@
     let killGrades = {};
     const sync = { peer: null, host: false, connections: [], connection: null };
     const params = new URLSearchParams(window.location.search);
-    const roomName = params.get('room') || 'main';
-    const roomSlug = roomName.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 18) || 'main';
-    const roomHash = [...roomName].reduce((hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0, 7).toString(36);
+    const gameName = params.get('game') || 'main';
+    const roomSlug = gameName.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 18) || 'main';
+    const roomHash = [...gameName].reduce((hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0, 7).toString(36);
     const roomKey = `${roomSlug}-${roomHash}`;
     const hostPeerId = `kill-team-scorecard-${roomKey}`;
 
@@ -395,7 +395,7 @@
 
     function writeUrlState() {
       const params = new URLSearchParams();
-      params.set('room', roomName);
+      params.set('game', gameName);
       params.set(urlKeys.turningPoint, state.turningPoint);
       params.set(urlKeys.initiative, state.initiative);
       ['left', 'right'].forEach((player) => {
@@ -489,8 +489,8 @@
     }
 
     function createNewRoom() {
-      const newRoom = `match-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-      window.location.href = `${window.location.pathname}?room=${encodeURIComponent(newRoom)}`;
+      const newGame = `match-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+      window.location.href = `${window.location.pathname}?game=${encodeURIComponent(newGame)}`;
     }
 
     async function initialize() {
@@ -533,7 +533,7 @@
     });
 
     $('#reset-game').addEventListener('click', resetGame);
-    $('#new-room').addEventListener('click', createNewRoom);
+    $('#new-game').addEventListener('click', createNewRoom);
     initialize();
   </script>
 </body>

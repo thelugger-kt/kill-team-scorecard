@@ -23,14 +23,14 @@ The expected URL is `https://thelugger-kt.github.io/kill-team-scorecard/`.
 
 ## URL state and OBS
 
-Each game can use a shared room URL such as `?room=match-1`. The first browser becomes the host, and other browsers using the same room receive score changes live through a direct peer connection. The current scorecard is also encoded into the URL as query parameters, so each connected browser and OBS can expose the latest snapshot.
+Each game can use a shared game URL such as `?game=match-1`. The first browser becomes the host, and other browsers using the same game receive score changes live through a direct peer connection. The current scorecard is also encoded into the URL as query parameters, so each connected browser and OBS can expose the latest snapshot.
 
 The main parameters are `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftRemaining`, `rightRemaining`, `leftTeam`, `rightTeam`, `leftStart`, `rightStart`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`, `tp`, and `initiative`.
 
-Example room: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
+Example game: `https://thelugger-kt.github.io/kill-team-scorecard/?game=match-1`
 
-OBS uses the same room URL: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
+OBS uses the same game URL: `https://thelugger-kt.github.io/kill-team-scorecard/?game=match-1`
 
-Use the **New room** button to generate an isolated room URL for a new game. Do not reuse the same `room` value for separate games.
+Use the **New game** button to generate an isolated game URL. Do not reuse the same `game` value for separate games.
 
-Example encoded state: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1&leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`
+Example encoded state: `https://thelugger-kt.github.io/kill-team-scorecard/?game=match-1&leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`
