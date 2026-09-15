@@ -29,6 +29,6 @@ The main parameters are `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`,
 
 Example room: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
 
-OBS room: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1&view=obs`
+OBS uses the same room URL: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
 
 Example encoded state: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1&leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`

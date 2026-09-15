@@ -392,7 +392,6 @@
     function writeUrlState() {
       const params = new URLSearchParams();
       params.set('room', roomName);
-      if (params.get('view') === 'obs') params.set('view', 'obs');
       params.set(urlKeys.turningPoint, state.turningPoint);
       params.set(urlKeys.initiative, state.initiative);
       ['left', 'right'].forEach((player) => {
