@@ -1,0 +1,14 @@
+[
+  {"archetype":"Security","name":"Plant Banner"},
+  {"archetype":"Security","name":"Martyrs"},
+  {"archetype":"Security","name":"Envoy"},
+  {"archetype":"Seek and Destroy","name":"Dominate"},
+  {"archetype":"Seek and Destroy","name":"Rout"},
+  {"archetype":"Seek and Destroy","name":"Sweep & Clear"},
+  {"archetype":"Recon","name":"Retrieval"},
+  {"archetype":"Recon","name":"Flank"},
+  {"archetype":"Recon","name":"Scout Enemy"},
+  {"archetype":"Infiltration","name":"Plant Devices"},
+  {"archetype":"Infiltration","name":"Steal Intelligence"},
+  {"archetype":"Infiltration","name":"Track Enemy"}
+]

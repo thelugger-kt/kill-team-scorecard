@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17191b">
+  <title>Kill Team Scorecard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --ink: #f4f1eb;
+      --muted: #a8a9a5;
+      --faint: #64686a;
+      --canvas: #17191b;
+      --panel: #212427;
+      --panel-alt: #292d30;
+      --line: #414648;
+      --line-strong: #62686a;
+      --orange: #ed5d27;
+      --orange-hot: #ff7540;
+      --orange-dark: #923717;
+      --left: #ed5d27;
+      --right: #e5e2d9;
+      --shadow: rgba(0, 0, 0, 0.34);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(237, 93, 39, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(237, 93, 39, 0.035) 1px, transparent 1px),
+        var(--canvas);
+      background-size: 42px 42px;
+      font-family: 'IBM Plex Mono', monospace;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      content: '';
+      opacity: 0.17;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      mix-blend-mode: screen;
+    }
+
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    .app-shell { min-height: 100vh; padding: 20px 28px 16px; }
+    .app-header { display: flex; align-items: end; justify-content: space-between; max-width: 1560px; margin: 0 auto 22px; }
+    .eyebrow { margin: 0 0 5px; color: var(--orange); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.025em; }
+    h1 { font-size: clamp(34px, 4vw, 58px); line-height: 0.92; font-weight: 800; }
+    .header-meta { display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 10px; letter-spacing: 0.08em; text-align: right; text-transform: uppercase; }
+    .status-dot { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 12px rgba(237, 93, 39, 0.75); }
+    .scorecard { max-width: 1560px; margin: 0 auto; overflow: hidden; border: 1px solid var(--line); background: rgba(33, 36, 39, 0.91); box-shadow: 0 18px 45px var(--shadow); }
+    .topline { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-bottom: 1px solid var(--line); }
+    .team-panel { padding: 18px 22px 20px; }
+    .team-panel.right { text-align: right; }
+    .team-label { display: block; margin-bottom: 9px; color: var(--muted); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+    select { width: 100%; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 0; padding: 0 42px 0 14px; color: var(--ink); background-color: var(--panel-alt); appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--orange) 50%), linear-gradient(135deg, var(--orange) 50%, transparent 50%); background-position: calc(100% - 19px) 21px, calc(100% - 13px) 21px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; outline: none; }
+    select:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(237, 93, 39, 0.2); }
+    .team-panel.right select { text-align: right; }
+    .turning-point { display: grid; place-items: center; align-content: center; gap: 5px; padding: 13px 8px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.48); }
+    .section-kicker { color: var(--muted); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; }
+    .counter { display: flex; align-items: center; gap: 12px; }
+    .counter-value { min-width: 38px; color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 54px; line-height: 0.8; font-weight: 700; text-align: center; }
+    .icon-button { width: 36px; height: 36px; border: 1px solid var(--line-strong); color: var(--ink); background: var(--panel-alt); font-size: 20px; line-height: 1; transition: border-color 140ms, color 140ms, background 140ms, transform 140ms; }
+    .icon-button:hover, .icon-button:focus-visible { border-color: var(--orange); color: var(--orange-hot); background: #303438; outline: none; }
+    .icon-button:active { transform: translateY(1px); }
+    .initiative { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .initiative button { border: 0; color: var(--faint); background: transparent; font-size: 17px; line-height: 1; }
+    .initiative button.active { color: var(--orange-hot); }
+    .initiative button:focus-visible { outline: 1px solid var(--orange); outline-offset: 3px; }
+
+    .scores { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); }
+    .score-side { padding: 16px 22px 22px; }
+    .score-side.right { text-align: right; }
+    .score-side.right .score-stepper { justify-content: flex-end; }
+    .score-side.right .score-number { order: 2; }
+    .score-side.right .score-buttons { order: 1; }
+    .score-rows { display: grid; gap: 9px; }
+    .score-row { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 7px 9px 7px 13px; border: 1px solid var(--line); background: rgba(41, 45, 48, 0.7); }
+    .score-row + .score-row { border-top-color: #53595b; }
+    .score-name { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; letter-spacing: 0.08em; }
+    .score-code { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; letter-spacing: 0.12em; }
+    .score-stepper { display: flex; align-items: center; gap: 8px; }
+    .score-number { min-width: 28px; color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 34px; line-height: 1; text-align: center; }
+    .score-buttons { display: flex; gap: 4px; }
+    .score-buttons .icon-button { width: 31px; height: 31px; font-size: 16px; }
+    .row-labels { display: grid; align-content: center; gap: 9px; padding: 16px 10px 22px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.38); }
+    .row-label { display: grid; place-items: center; min-height: 58px; color: var(--muted); font-size: 9px; letter-spacing: 0.1em; text-align: center; }
+    .row-label strong { display: block; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; letter-spacing: 0.12em; }
+
+    .operations { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-top: 1px solid var(--line); }
+    .operation-side { display: grid; gap: 12px; padding: 15px 22px 19px; }
+    .operation-side.right { text-align: right; }
+    .operation-title { margin-bottom: -4px; color: var(--muted); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+    .primary-operation[aria-hidden='true'] { opacity: 0.45; }
+    .center-rail { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+    .totals { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-top: 1px solid var(--line); background: #1b1e20; }
+    .total-side { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 17px 22px 19px; }
+    .total-side.right { flex-direction: row-reverse; }
+    .total-label { color: var(--muted); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .total-value { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 0.8; }
+    .total-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--faint); font-size: 9px; letter-spacing: 0.13em; text-align: center; text-transform: uppercase; }
+    .actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1560px; margin: 16px auto 0; }
+    .helper { color: var(--faint); font-size: 9px; letter-spacing: 0.06em; }
+    .reset-button { border: 1px solid var(--line-strong); padding: 10px 15px; color: var(--muted); background: transparent; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .reset-button:hover, .reset-button:focus-visible { border-color: var(--orange); color: var(--orange-hot); outline: none; }
+    footer { max-width: 1560px; margin: 22px auto 0; color: var(--faint); font-size: 9px; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
+    footer span { color: var(--orange); }
+    .error-message { display: none; max-width: 1560px; margin: 10px auto 0; padding: 12px 14px; border: 1px solid var(--orange-dark); color: #ffb199; background: rgba(146, 55, 23, 0.22); font-size: 11px; }
+    .error-message.visible { display: block; }
+
+    @media (max-width: 760px) {
+      .app-shell { padding: 14px 12px; }
+      .app-header { align-items: start; gap: 12px; }
+      .header-meta { display: none; }
+      .topline, .scores, .operations, .totals { grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr); }
+      .team-panel, .score-side, .operation-side { padding-left: 10px; padding-right: 10px; }
+      .row-labels { padding-left: 4px; padding-right: 4px; }
+      .score-name { font-size: 15px; }
+      select { padding-left: 8px; padding-right: 28px; font-size: 11px; }
+      .counter { gap: 3px; }
+      .counter-value { min-width: 25px; font-size: 42px; }
+      .counter .icon-button { width: 27px; height: 27px; font-size: 16px; }
+      .score-stepper { gap: 3px; }
+      .score-number { min-width: 22px; font-size: 28px; }
+      .score-buttons .icon-button { width: 25px; height: 25px; font-size: 13px; }
+      .score-row { padding-left: 7px; padding-right: 5px; }
+      .total-side { padding-left: 10px; padding-right: 10px; }
+      .total-label { font-size: 8px; }
+      .total-value { font-size: 35px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Kill Team // Battle Record</p>
+        <h1>Scorecard</h1>
+      </div>
+      <div class="header-meta"><span><i class="status-dot"></i>In-session only</span><span>v0.1 // Field test</span></div>
+    </header>
+
+    <section class="scorecard" aria-label="Kill Team scorecard">
+      <div class="topline">
+        <div class="team-panel">
+          <label class="team-label" for="left-team">Player 01 // Kill Team</label>
+          <select id="left-team" data-player="left" aria-label="Player 01 Kill Team"></select>
+        </div>
+        <div class="turning-point">
+          <span class="section-kicker">Turning Point</span>
+          <div class="counter">
+            <button class="icon-button" type="button" data-counter="turningPoint" data-change="-1" aria-label="Decrease turning point">−</button>
+            <output id="turning-point-value" class="counter-value">0</output>
+            <button class="icon-button" type="button" data-counter="turningPoint" data-change="1" aria-label="Increase turning point">+</button>
+          </div>
+          <div class="initiative" aria-label="Initiative selector">
+            <button type="button" data-initiative="left" aria-label="Left player has initiative">◀</button>
+            <span>Initiative</span>
+            <button type="button" data-initiative="right" aria-label="Right player has initiative">▶</button>
+          </div>
+        </div>
+        <div class="team-panel right">
+          <label class="team-label" for="right-team">Player 02 // Kill Team</label>
+          <select id="right-team" data-player="right" aria-label="Player 02 Kill Team"></select>
+        </div>
+      </div>
+
+      <div class="scores">
+        <section class="score-side" data-side="left" aria-label="Player 01 operation scores">
+          <div class="score-rows">
+            <div class="score-row"><div><span class="score-name">Critical</span><span class="score-code">CRIT OP // 00–06 VP</span></div><div class="score-stepper"><output class="score-number" data-score="crit">0</output><div class="score-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease Player 01 Critical score">−</button><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase Player 01 Critical score">+</button></div></div></div>
+            <div class="score-row"><div><span class="score-name">Elimination</span><span class="score-code">KILL OP // 00–06 VP</span></div><div class="score-stepper"><output class="score-number" data-score="kill">0</output><div class="score-buttons"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease Player 01 Elimination score">−</button><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase Player 01 Elimination score">+</button></div></div></div>
+            <div class="score-row"><div><span class="score-name">Tactical</span><span class="score-code">TAC OP // 00–06 VP</span></div><div class="score-stepper"><output class="score-number" data-score="tac">0</output><div class="score-buttons"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease Player 01 Tactical score">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase Player 01 Tactical score">+</button></div></div></div>
+          </div>
+        </section>
+        <div class="row-labels" aria-hidden="true"><div class="row-label"><strong>CRIT OP</strong><span>Critical</span></div><div class="row-label"><strong>KILL OP</strong><span>Elimination</span></div><div class="row-label"><strong>TAC OP</strong><span>Tactical</span></div></div>
+        <section class="score-side right" data-side="right" aria-label="Player 02 operation scores">
+          <div class="score-rows">
+            <div class="score-row"><div><span class="score-name">Critical</span><span class="score-code">CRIT OP // 00–06 VP</span></div><div class="score-stepper"><output class="score-number" data-score="crit">0</output><div class="score-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease Player 02 Critical score">−</button><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase Player 02 Critical score">+</button></div></div></div>
+            <div class="score-row"><div><span class="score-name">Elimination</span><span class="score-code">KILL OP // 00–06 VP</span></div><div class="score-stepper"><output class="score-number" data-score="kill">0</output><div class="score-buttons"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease Player 02 Elimination score">−</button><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase Player 02 Elimination score">+</button></div></div></div>
+            <div class="score-row"><div><span class="score-name">Tactical</span><span class="score-code">TAC OP // 00–06 VP</span></div><div class="score-stepper"><output class="score-number" data-score="tac">0</output><div class="score-buttons"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease Player 02 Tactical score">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase Player 02 Tactical score">+</button></div></div></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="operations">
+        <section class="operation-side" data-side="left" aria-label="Player 01 operations">
+          <p class="operation-title">Tac Op // Select from available archetypes</p>
+          <select data-op="tac" data-player="left" aria-label="Player 01 Tac Op"></select>
+          <p class="operation-title">Primary Op // Revealed at Turning Point 4</p>
+          <select class="primary-operation" data-op="primary" data-player="left" aria-label="Player 01 Primary Op"><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="primary">Primary Op</option></select>
+        </section>
+        <div class="center-rail" aria-hidden="true"></div>
+        <section class="operation-side right" data-side="right" aria-label="Player 02 operations">
+          <p class="operation-title">Tac Op // Select from available archetypes</p>
+          <select data-op="tac" data-player="right" aria-label="Player 02 Tac Op"></select>
+          <p class="operation-title">Primary Op // Revealed at Turning Point 4</p>
+          <select class="primary-operation" data-op="primary" data-player="right" aria-label="Player 02 Primary Op"><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="primary">Primary Op</option></select>
+        </section>
+      </div>
+
+      <div class="totals">
+        <div class="total-side"><span class="total-label">Player 01 // Total VP</span><output class="total-value" data-total="left">0</output></div>
+        <div class="total-center">Primary bonus<br>½ selected op, rounded up</div>
+        <div class="total-side right"><span class="total-label">Player 02 // Total VP</span><output class="total-value" data-total="right">0</output></div>
+      </div>
+    </section>
+
+    <div class="actions"><p class="helper">Scores are held in this session only. Reset clears both players.</p><button id="reset-game" class="reset-button" type="button">Reset game</button></div>
+    <p id="error-message" class="error-message" role="alert"></p>
+    <footer>Made by <span>Shawn the Lugger</span></footer>
+  </main>
+
+  <script>
+    const state = {
+      turningPoint: 0,
+      initiative: 'left',
+      left: { team: '', scores: { crit: 0, kill: 0, tac: 0 }, tacOp: '', primary: 'primary' },
+      right: { team: '', scores: { crit: 0, kill: 0, tac: 0 }, tacOp: '', primary: 'primary' }
+    };
+    let teamOptions = [];
+    let tacOps = [];
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+    function showError(message) {
+      const error = $('#error-message');
+      error.textContent = message;
+      error.classList.add('visible');
+    }
+
+    function populateTeamOptions() {
+      $$('[data-player][id$="-team"]').forEach((select) => {
+        select.innerHTML = '<option value="">Select Kill Team</option>' + teamOptions.map((team) => `<option value="${escapeHtml(team.name)}">${escapeHtml(team.name)}</option>`).join('');
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+    }
+
+    function availableTacOps(player) {
+      const selectedTeam = teamOptions.find((team) => team.name === state[player].team);
+      if (!selectedTeam) return [];
+      return tacOps.filter((op) => selectedTeam.archetypes.includes(op.archetype));
+    }
+
+    function populateTacOp(player) {
+      const select = $(`[data-op="tac"][data-player="${player}"]`);
+      const options = availableTacOps(player);
+      const current = state[player].tacOp;
+      select.innerHTML = '<option value="">Select Tac Op</option>' + options.map((op) => `<option value="${escapeHtml(op.name)}">${escapeHtml(op.name)} · ${escapeHtml(op.archetype)}</option>`).join('');
+      state[player].tacOp = options.some((op) => op.name === current) ? current : '';
+      select.value = state[player].tacOp;
+    }
+
+    function calculateTotal(player) {
+      const scores = state[player].scores;
+      const selectedOperation = state[player].primary;
+      const selectedScore = selectedOperation === 'primary' ? scores.tac : scores[selectedOperation];
+      return scores.crit + scores.kill + scores.tac + Math.ceil(selectedScore / 2);
+    }
+
+    function render() {
+      $('#turning-point-value').textContent = state.turningPoint;
+      $$('[data-initiative]').forEach((button) => button.classList.toggle('active', button.dataset.initiative === state.initiative));
+      ['left', 'right'].forEach((player) => {
+        $(`#${player}-team`).value = state[player].team;
+        const side = $(`.score-side[data-side="${player}"]`);
+        Object.entries(state[player].scores).forEach(([score, value]) => { $(`[data-score="${score}"]`, side).textContent = value; });
+        $(`[data-total="${player}"]`).textContent = calculateTotal(player);
+        $(`[data-op="primary"][data-player="${player}"]`).value = state[player].primary;
+        $(`[data-op="primary"][data-player="${player}"]`).disabled = state.turningPoint < 4;
+        $(`[data-op="primary"][data-player="${player}"]`).setAttribute('aria-hidden', String(state.turningPoint < 4));
+        populateTacOp(player);
+      });
+    }
+
+    function setTeam(player, team) {
+      state[player].team = team;
+      state[player].tacOp = '';
+      populateTacOp(player);
+      render();
+    }
+
+    function resetGame() {
+      if (!window.confirm('Reset both players and clear the current scorecard?')) return;
+      state.turningPoint = 0;
+      state.initiative = 'left';
+      ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].tacOp = ''; state[player].primary = 'primary'; Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = 0; }); });
+      render();
+    }
+
+    async function initialize() {
+      try {
+        const [teamsResponse, tacOpsResponse] = await Promise.all([fetch('data/kill-teams.json'), fetch('data/tac-ops.json')]);
+        if (!teamsResponse.ok || !tacOpsResponse.ok) throw new Error('Data files could not be loaded.');
+        teamOptions = await teamsResponse.json();
+        tacOps = await tacOpsResponse.json();
+        populateTeamOptions();
+        render();
+      } catch (error) {
+        showError('The scorecard data could not be loaded. Run this site through a local web server or GitHub Pages.');
+        console.error(error);
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      const counterButton = event.target.closest('[data-counter]');
+      if (counterButton) state[counterButton.dataset.counter] = Math.max(0, Math.min(4, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
+      const scoreButton = event.target.closest('[data-score-change]');
+      if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; state[side].scores[score] = Math.max(0, Math.min(6, state[side].scores[score] + Number(scoreButton.dataset.change))); }
+      const initiativeButton = event.target.closest('[data-initiative]');
+      if (initiativeButton) state.initiative = initiativeButton.dataset.initiative;
+      if (counterButton || scoreButton || initiativeButton) render();
+    });
+
+    document.addEventListener('change', (event) => {
+      const teamSelect = event.target.closest('[id$="-team"]');
+      if (teamSelect) setTeam(teamSelect.dataset.player, teamSelect.value);
+      const opSelect = event.target.closest('[data-op]');
+      if (opSelect && opSelect.dataset.op === 'tac') state[opSelect.dataset.player].tacOp = opSelect.value;
+      if (opSelect && opSelect.dataset.op === 'primary') state[opSelect.dataset.player].primary = opSelect.value;
+      if (opSelect) render();
+    });
+
+    $('#reset-game').addEventListener('click', resetGame);
+    initialize();
+  </script>
+</body>
+</html>
