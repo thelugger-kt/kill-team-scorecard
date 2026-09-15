@@ -129,7 +129,6 @@
     .total-label { color: var(--muted); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
     .total-value { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 0.8; }
     .total-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; text-align: center; }
-    .actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1560px; margin: 16px auto 0; }
     .action-buttons { display: flex; gap: 8px; }
     .helper { color: var(--faint); font-size: 9px; letter-spacing: 0.06em; }
     .reset-button { border: 1px solid var(--line-strong); padding: 10px 15px; color: var(--muted); background: transparent; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -141,7 +140,7 @@
 
     .score-layout { --layout-columns: minmax(0, 1.5fr) 56px minmax(85px, .85fr) minmax(70px, .75fr) minmax(118px, 1fr) minmax(70px, .75fr) minmax(85px, .85fr) 56px minmax(0, 1.5fr); }
     .setup-grid, .layout-row { display: grid; grid-template-columns: var(--layout-columns); align-items: center; }
-    .setup-grid { grid-template-rows: 96px 55px 65px; gap: 10px 0; padding: 18px 22px 5px; border-bottom: 1px solid var(--line); }
+    .setup-grid { grid-template-rows: 96px 55px 65px; gap: 10px 0; padding: 10px 22px 5px; border-bottom: 1px solid var(--line); }
     .setup-grid select { min-width: 0; }
     .team-left { grid-area: 1 / 1 / 2 / 4; }
     .team-right { grid-area: 1 / 7 / 2 / 10; text-align: right; }
@@ -191,12 +190,12 @@
     .initiative-choice { width: 49px; height: 49px; border: 1px solid transparent; color: var(--faint); background: transparent; font-size: 40px; line-height: 1; }
     .initiative-choice.active { color: var(--orange-hot); }
     .initiative-choice:focus-visible { border-color: var(--orange); outline: none; }
-    .layout-row.totals { min-height: 127px; background: #1b1e20; }
+    .layout-row.totals { min-height: 119px; background: #1b1e20; }
+    .layout-row.totals .credit { grid-column: 1 / 4; justify-self: start; margin: 0; color: var(--faint); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }
+    .layout-row.totals .credit span { color: var(--orange); }
     .layout-row.totals .total-center { grid-column: 5; border: 0; font-size: 34px; }
     .layout-row.totals .total-value { font-size: 68px; line-height: 1; }
-    .actions { justify-content: space-between; margin-top: 14px; }
-    .actions .credit { color: var(--faint); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
-    .actions .credit span { color: var(--orange); }
+    .layout-row.totals .action-buttons { grid-column: 7 / 10; justify-self: end; }
 
     @media (max-width: 760px) {
       .app-shell { padding: 14px 12px; }
@@ -293,11 +292,12 @@
       </div>
 
       <div class="layout-row totals">
+        <p class="credit">Made by <span>Shawn the Lugger</span></p>
         <output class="total-value score-left" data-total="left">0</output><span class="total-center">Total VP</span><output class="total-value score-right" data-total="right">0</output>
+        <div class="action-buttons"><button id="new-game" class="reset-button" type="button">New game</button><button id="reset-game" class="reset-button" type="button">Reset game</button></div>
       </div>
     </section>
 
-    <div class="actions"><p class="credit">Made by <span>Shawn the Lugger</span></p><div class="action-buttons"><button id="new-game" class="reset-button" type="button">New game</button><button id="reset-game" class="reset-button" type="button">Reset game</button></div></div>
     <p id="error-message" class="error-message" role="alert"></p>
   </main>
 
