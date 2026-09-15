@@ -58,60 +58,57 @@
     h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.025em; }
     h1 { font-size: clamp(34px, 4vw, 58px); line-height: 0.92; font-weight: 800; }
     .scorecard { max-width: 1560px; margin: 0 auto; overflow: hidden; border: 1px solid var(--line); background: rgba(33, 36, 39, 0.91); box-shadow: 0 18px 45px var(--shadow); }
-    .topline { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-bottom: 1px solid var(--line); }
-    .team-panel { padding: 18px 22px 20px; }
+    .topline { display: grid; grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr); border-bottom: 1px solid var(--line); }
+    .team-panel { display: grid; gap: 10px; padding: 18px 22px 20px; }
     .team-panel.right { text-align: right; }
-    .team-label { display: block; margin-bottom: 9px; color: var(--muted); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+    .team-panel select + select { margin-top: 0; }
     select { width: 100%; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 0; padding: 0 42px 0 14px; color: var(--ink); background-color: var(--panel-alt); appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--orange) 50%), linear-gradient(135deg, var(--orange) 50%, transparent 50%); background-position: calc(100% - 19px) 21px, calc(100% - 13px) 21px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; outline: none; }
     select:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(237, 93, 39, 0.2); }
     .team-panel.right select { text-align: right; }
-    .turning-point { display: grid; place-items: center; align-content: center; gap: 5px; padding: 13px 8px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.48); }
-    .section-kicker { color: var(--muted); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; }
+    .turning-point { display: grid; place-items: center; align-content: center; gap: 7px; padding: 13px 8px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.48); }
+    .section-kicker { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
     .counter { display: flex; align-items: center; gap: 12px; }
     .counter-value { min-width: 38px; color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 54px; line-height: 0.8; font-weight: 700; text-align: center; }
     .icon-button { width: 36px; height: 36px; border: 1px solid var(--line-strong); color: var(--ink); background: var(--panel-alt); font-size: 20px; line-height: 1; transition: border-color 140ms, color 140ms, background 140ms, transform 140ms; }
     .icon-button:hover, .icon-button:focus-visible { border-color: var(--orange); color: var(--orange-hot); background: #303438; outline: none; }
     .icon-button:active { transform: translateY(1px); }
-    .initiative { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .initiative { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
     .initiative button { border: 0; color: var(--faint); background: transparent; font-size: 17px; line-height: 1; }
     .initiative button.active { color: var(--orange-hot); }
     .initiative button:focus-visible { outline: 1px solid var(--orange); outline-offset: 3px; }
 
-    .scores { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); }
-    .cp-scores { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .scores { display: grid; grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr); }
+    .cp-scores { display: grid; grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
     .cp-side { display: grid; place-items: center; min-height: 74px; padding: 9px 22px; }
     .cp-side.right { text-align: right; }
-    .cp-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; letter-spacing: 0.12em; }
+    .cp-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; }
     .score-side { padding: 16px 22px 22px; }
     .score-side.right { text-align: right; }
-    .score-side.right .score-stepper { justify-content: flex-end; }
+    .score-side .score-stepper { justify-content: flex-end; }
+    .score-side.right .score-stepper { justify-content: flex-start; }
     .score-side.right .score-number { order: 2; }
     .score-side.right .score-buttons { order: 1; }
     .score-rows { display: grid; gap: 9px; }
     .score-row { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 7px 9px 7px 13px; border: 1px solid var(--line); background: rgba(41, 45, 48, 0.7); }
     .score-row + .score-row { border-top-color: #53595b; }
-    .plain-score-row { justify-content: center; padding: 7px 13px; }
+    .plain-score-row { justify-content: flex-end; padding: 7px 13px; }
+    .score-side.right .plain-score-row { justify-content: flex-start; }
     .score-stepper { display: flex; align-items: center; gap: 8px; }
     .score-number { min-width: 28px; color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 34px; line-height: 1; text-align: center; }
     .score-buttons { display: flex; gap: 4px; }
     .score-buttons .icon-button { width: 31px; height: 31px; font-size: 16px; }
     .row-labels { display: grid; align-content: center; gap: 9px; padding: 16px 10px 22px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.38); }
-    .row-label { display: grid; place-items: center; min-height: 58px; color: var(--muted); font-size: 9px; letter-spacing: 0.1em; text-align: center; }
-    .row-label strong { display: block; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; letter-spacing: 0.12em; }
-
-    .operations { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-top: 1px solid var(--line); }
-    .operation-side { display: grid; gap: 12px; padding: 15px 22px 19px; }
-    .operation-side.right { text-align: right; }
-    .operation-title { margin-bottom: -4px; color: var(--muted); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+    .row-label { display: grid; place-items: center; min-height: 58px; color: var(--muted); font-size: 12px; letter-spacing: 0.1em; text-align: center; }
+    .row-label strong { display: block; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; }
     .primary-operation[aria-hidden='true'] { opacity: 0.45; }
     .center-rail { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
-    .totals { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1fr); border-top: 1px solid var(--line); background: #1b1e20; }
+    .totals { display: grid; grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr); border-top: 1px solid var(--line); background: #1b1e20; }
     .total-side { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 17px 22px 19px; }
     .total-side.right { flex-direction: row-reverse; }
     .total-side.winner { background: rgba(237, 93, 39, 0.2); box-shadow: inset 0 0 0 1px var(--orange); }
     .total-label { color: var(--muted); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
     .total-value { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 0.8; }
-    .total-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; letter-spacing: 0.12em; text-align: center; }
+    .total-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; text-align: center; }
     .actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1560px; margin: 16px auto 0; }
     .helper { color: var(--faint); font-size: 9px; letter-spacing: 0.06em; }
     .reset-button { border: 1px solid var(--line-strong); padding: 10px 15px; color: var(--muted); background: transparent; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -124,10 +121,9 @@
     @media (max-width: 760px) {
       .app-shell { padding: 14px 12px; }
       .app-header { align-items: start; gap: 12px; }
-      .topline, .scores, .cp-scores, .operations, .totals { grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr); }
-      .team-panel, .score-side, .operation-side { padding-left: 10px; padding-right: 10px; }
+      .topline, .scores, .cp-scores, .totals { grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr); }
+      .team-panel, .score-side { padding-left: 10px; padding-right: 10px; }
       .row-labels { padding-left: 4px; padding-right: 4px; }
-      .score-name { font-size: 15px; }
       select { padding-left: 8px; padding-right: 28px; font-size: 11px; }
       .counter { gap: 3px; }
       .counter-value { min-width: 25px; font-size: 42px; }
@@ -153,8 +149,9 @@
     <section class="scorecard" aria-label="Kill Team scorecard">
       <div class="topline">
         <div class="team-panel">
-          <label class="team-label" for="left-team">Kill Team</label>
           <select id="left-team" data-player="left" aria-label="Left Kill Team"></select>
+          <select data-op="tac" data-player="left" aria-label="Left Tac Op"></select>
+          <select class="primary-operation" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="primary">Primary Op</option></select>
         </div>
         <div class="turning-point">
           <span class="section-kicker">Turning Point</span>
@@ -170,8 +167,9 @@
           </div>
         </div>
         <div class="team-panel right">
-          <label class="team-label" for="right-team">Kill Team</label>
           <select id="right-team" data-player="right" aria-label="Right Kill Team"></select>
+          <select data-op="tac" data-player="right" aria-label="Right Tac Op"></select>
+          <select class="primary-operation" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="primary">Primary Op</option></select>
         </div>
       </div>
 
@@ -200,22 +198,6 @@
             <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease right score">−</button><output class="score-number" data-score="kill">0</output><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase right score">+</button></div></div>
             <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease right score">−</button><output class="score-number" data-score="tac">0</output><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase right score">+</button></div></div>
           </div>
-        </section>
-      </div>
-
-      <div class="operations">
-        <section class="operation-side" data-side="left" aria-label="Left operations">
-          <p class="operation-title">Reveal Tac Op</p>
-          <select data-op="tac" data-player="left" aria-label="Left Tac Op"></select>
-          <p class="operation-title">Reveal Primary Op</p>
-          <select class="primary-operation" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="primary">Primary Op</option></select>
-        </section>
-        <div class="center-rail" aria-hidden="true"></div>
-        <section class="operation-side right" data-side="right" aria-label="Right operations">
-          <p class="operation-title">Reveal Tac Op</p>
-          <select data-op="tac" data-player="right" aria-label="Right Tac Op"></select>
-          <p class="operation-title">Reveal Primary Op</p>
-          <select class="primary-operation" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="primary">Primary Op</option></select>
         </section>
       </div>
 
@@ -270,7 +252,7 @@
       const select = $(`[data-op="tac"][data-player="${player}"]`);
       const options = availableTacOps(player);
       const current = state[player].tacOp;
-      select.innerHTML = '<option value="">Reveal Tac Op</option>' + options.map((op) => `<option value="${escapeHtml(op.name)}">${escapeHtml(op.name)} · ${escapeHtml(op.archetype)}</option>`).join('');
+        select.innerHTML = '<option value="">Reveal Tac Op</option>' + options.map((op) => `<option value="${escapeHtml(op.name)}">${escapeHtml(op.name)}</option>`).join('');
       state[player].tacOp = options.some((op) => op.name === current) ? current : '';
       select.value = state[player].tacOp;
     }
