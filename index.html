@@ -315,7 +315,8 @@
     }
 
     function rawKillOpScore(player) {
-      const thresholds = killGrades[String(state[player].startingOperatives)] || [];
+      const opposingPlayer = player === 'left' ? 'right' : 'left';
+      const thresholds = killGrades[String(state[opposingPlayer].startingOperatives)] || [];
       return thresholds.reduce((score, threshold, index) => state[player].operativesKilled >= threshold ? index + 1 : score, 0);
     }
 
