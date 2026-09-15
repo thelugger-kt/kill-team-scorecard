@@ -110,10 +110,6 @@
     .killed-count { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 35px; line-height: 1; }
     .kill-control { display: flex; align-items: center; gap: 10px; }
     .kill-control.right { flex-direction: row-reverse; }
-    .primary-row { display: grid; grid-template-columns: minmax(0, 1fr) 320px minmax(0, 1fr); border-top: 1px solid var(--line); }
-    .primary-side { padding: 12px 22px; }
-    .primary-side.right { text-align: right; }
-    .primary-center { display: flex; align-items: center; justify-content: center; gap: 24px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; letter-spacing: 0.12em; }
     .primary-operation[aria-hidden='true'] { opacity: 0.45; }
     .center-rail { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
     .totals { display: grid; grid-template-columns: minmax(0, 1fr) 320px minmax(0, 1fr); border-top: 1px solid var(--line); background: #1b1e20; }
@@ -149,28 +145,28 @@
     .turning-value { grid-area: 3 / 5; justify-self: center; }
     .turning-plus { grid-area: 3 / 6; justify-self: start; }
     .layout-row { min-height: 64px; padding: 0 22px; border-bottom: 1px solid var(--line); }
-    .layout-row .score-buttons { margin: 0; }
+    .layout-row.cp-row { min-height: 86px; margin-bottom: 8px; border-bottom: 2px solid var(--line-strong); }
+    .layout-row.cp-row .grid-score.score-left,
+    .layout-row.cp-row .grid-score.score-right { color: #fff; font-size: 68px; }
+    .layout-row .score-buttons { gap: 8px; margin: 0; }
     .left-buttons { grid-column: 1 / 4; justify-self: end; }
     .right-buttons { grid-column: 7 / 10; justify-self: start; }
     .score-left { grid-column: 4; justify-self: end; }
     .center-label { grid-column: 5; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
     .score-right { grid-column: 6; justify-self: start; }
     .grid-score { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 1; }
-    .killed-label-left { grid-column: 1; justify-self: start; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; text-align: left; white-space: nowrap; }
+    .killed-label-left { grid-column: 1; justify-self: start; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-align: left; white-space: nowrap; }
     .killed-buttons-left { grid-column: 2; justify-self: center; }
     .killed-count-left { grid-column: 3; justify-self: end; }
     .killed-count-right { grid-column: 7; justify-self: start; }
     .killed-buttons-right { grid-column: 8; justify-self: center; }
-    .killed-label-right { grid-column: 9; justify-self: end; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; text-align: right; white-space: nowrap; }
+    .killed-label-right { grid-column: 9; justify-self: end; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-align: right; white-space: nowrap; }
     .tac-select-left { grid-column: 1 / 3; min-width: 0; }
     .tac-buttons-left { grid-column: 3; justify-self: end; }
     .tac-select-right { grid-column: 8 / 10; min-width: 0; }
     .tac-buttons-right { grid-column: 7; justify-self: start; }
     .primary-select-left { grid-column: 1 / 4; min-width: 0; }
     .primary-select-right { grid-column: 7 / 10; min-width: 0; }
-    .primary-label { grid-column: 5; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 20px; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
-    .primary-value-left { grid-column: 4; justify-self: end; }
-    .primary-value-right { grid-column: 6; justify-self: start; }
     .initiative-choice { width: 38px; height: 38px; border: 1px solid transparent; color: var(--faint); background: transparent; font-size: 31px; line-height: 1; }
     .initiative-choice.active { color: var(--orange-hot); }
     .initiative-choice:focus-visible { border-color: var(--orange); outline: none; }
@@ -184,7 +180,7 @@
     @media (max-width: 760px) {
       .app-shell { padding: 14px 12px; }
       .app-header { align-items: start; gap: 12px; }
-      .topline, .scores, .cp-scores, .primary-row, .totals { grid-template-columns: minmax(0, 1fr) 110px minmax(0, 1fr); }
+      .topline, .scores, .cp-scores, .totals { grid-template-columns: minmax(0, 1fr) 110px minmax(0, 1fr); }
       .team-panel, .score-side { padding-left: 10px; padding-right: 10px; }
       .row-labels { padding-left: 4px; padding-right: 4px; }
       select { padding-left: 8px; padding-right: 28px; font-size: 11px; }
@@ -194,6 +190,7 @@
       .score-stepper { gap: 3px; }
       .score-number { min-width: 30px; font-size: 36px; }
       .score-buttons .icon-button { width: 25px; height: 25px; font-size: 13px; }
+      .layout-row .score-buttons { gap: 4px; }
       .score-row { padding-left: 7px; padding-right: 5px; }
       .total-side { padding-left: 10px; padding-right: 10px; }
       .total-label { font-size: 8px; }
@@ -201,6 +198,8 @@
       .score-layout { --layout-columns: minmax(0, 1fr) 26px minmax(26px, .45fr) 34px 58px 34px minmax(26px, .45fr) 26px minmax(0, 1fr); }
       .setup-grid { padding-left: 10px; padding-right: 10px; }
       .layout-row { padding-left: 10px; padding-right: 10px; }
+      .layout-row.cp-row { min-height: 70px; }
+      .layout-row.cp-row .grid-score { font-size: 46px; }
       .grid-score { font-size: 34px; }
       .center-label { font-size: 16px; }
       .killed-label-left, .killed-label-right { display: none; }
@@ -227,7 +226,7 @@
         <button class="icon-button turning-plus" type="button" data-counter="turningPoint" data-change="1" aria-label="Increase turning point">+</button>
       </div>
 
-      <div class="layout-row" data-side="left">
+      <div class="layout-row cp-row" data-side="left">
         <div class="score-buttons left-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div>
         <output class="grid-score score-left" data-player="left" data-score="cp">0</output><span class="center-label">CP</span><output class="grid-score score-right" data-player="right" data-score="cp">0</output>
         <div class="score-buttons right-buttons" data-side="right"><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase right CP">+</button><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease right CP">−</button></div>
@@ -252,7 +251,7 @@
       </div>
 
       <div class="layout-row">
-        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><output class="grid-score primary-value-left" data-player="left" data-primary-value>0</output><span class="primary-label">Primary</span><output class="grid-score primary-value-right" data-player="right" data-primary-value>0</output><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
+        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
       </div>
 
       <div class="layout-row totals">
@@ -327,10 +326,6 @@
       return Math.min(6, rawScore + bonus);
     }
 
-    function primaryValue(player) {
-      return { crit: 1, kill: 2, tac: 3 }[state[player].primary] || 0;
-    }
-
     function calculateTotal(player) {
       const scores = state[player].scores;
       const selectedOperation = state[player].primary;
@@ -352,7 +347,6 @@
         $(`[data-op="primary"][data-player="${player}"]`).value = state[player].primary;
         $(`[data-op="primary"][data-player="${player}"]`).disabled = state.turningPoint !== 5;
         $(`[data-op="primary"][data-player="${player}"]`).setAttribute('aria-hidden', String(state.turningPoint !== 5));
-        $(`[data-primary-value][data-player="${player}"]`).textContent = primaryValue(player);
         populateTacOp(player);
       });
       const leftTotal = calculateTotal('left');
