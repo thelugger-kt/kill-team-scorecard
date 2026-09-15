@@ -263,7 +263,6 @@
     <p id="error-message" class="error-message" role="alert"></p>
   </main>
 
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <script>
     const state = {
       turningPoint: 0,
@@ -274,10 +273,6 @@
     let teamOptions = [];
     let tacOps = [];
     let killGrades = {};
-    const sync = { peer: null, host: false, connections: [], connection: null };
-    const roomName = new URLSearchParams(window.location.search).get('room') || 'main';
-    const roomKey = roomName.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 24) || 'main';
-    const hostPeerId = `kill-team-scorecard-${roomKey}`;
 
     const $ = (selector, root = document) => root.querySelector(selector);
     const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -304,56 +299,47 @@
       return String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
     }
 
-    function copyState() {
-      return JSON.parse(JSON.stringify(state));
-    }
+    const urlKeys = {
+      turningPoint: 'tp',
+      initiative: 'initiative',
+      left: { team: 'leftTeam', startingOperatives: 'leftStart', operativesRemaining: 'leftRemaining', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', tacOp: 'leftTacOp', primary: 'leftPrimary' },
+      right: { team: 'rightTeam', startingOperatives: 'rightStart', operativesRemaining: 'rightRemaining', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', tacOp: 'rightTacOp', primary: 'rightPrimary' }
+    };
 
-    function sendState(connection, type = 'state') {
-      if (connection && connection.open) connection.send({ type, state: copyState() });
-    }
-
-    function broadcastState() {
-      if (sync.host) sync.connections.forEach((connection) => sendState(connection));
-      else sendState(sync.connection, 'state-update');
-    }
-
-    function applyRemoteState(nextState) {
-      if (!nextState || !nextState.left || !nextState.right) return;
+    function readUrlState() {
+      const params = new URLSearchParams(window.location.search);
+      if (!window.location.search) return;
+      state.turningPoint = Math.max(0, Math.min(5, Number(params.get(urlKeys.turningPoint)) || 0));
+      state.initiative = params.get(urlKeys.initiative) === 'right' ? 'right' : 'left';
       ['left', 'right'].forEach((player) => {
-        if (nextState[player].operativesRemaining === undefined) nextState[player].operativesRemaining = Math.max(0, Number(nextState[player].startingOperatives) - Number(nextState[player].operativesKilled || 0));
+        const keys = urlKeys[player];
+        state[player].team = params.get(keys.team) || '';
+        state[player].startingOperatives = params.has(keys.startingOperatives) ? Number(params.get(keys.startingOperatives)) || '' : '';
+        state[player].operativesRemaining = params.has(keys.operativesRemaining) ? Math.max(0, Number(params.get(keys.operativesRemaining)) || 0) : Number(state[player].startingOperatives) || 0;
+        state[player].scores.cp = Math.max(0, Math.min(12, Number(params.get(keys.cp)) || 0));
+        state[player].scores.crit = Math.max(0, Math.min(6, Number(params.get(keys.crit)) || 0));
+        state[player].scores.tac = Math.max(0, Math.min(6, Number(params.get(keys.tac)) || 0));
+        state[player].tacOp = params.get(keys.tacOp) || '';
+        state[player].primary = params.get(keys.primary) || '';
       });
-      Object.assign(state, nextState);
-      render(false);
     }
 
-    function handleConnection(connection) {
-      connection.on('open', () => {
-        if (sync.host) {
-          sync.connections.push(connection);
-          sendState(connection);
-        } else {
-          sync.connection = connection;
-          connection.send({ type: 'request-state' });
-        }
+    function writeUrlState() {
+      const params = new URLSearchParams();
+      params.set(urlKeys.turningPoint, state.turningPoint);
+      params.set(urlKeys.initiative, state.initiative);
+      ['left', 'right'].forEach((player) => {
+        const keys = urlKeys[player];
+        if (state[player].team) params.set(keys.team, state[player].team);
+        if (state[player].startingOperatives !== '') params.set(keys.startingOperatives, state[player].startingOperatives);
+        params.set(keys.operativesRemaining, state[player].operativesRemaining);
+        params.set(keys.cp, state[player].scores.cp);
+        params.set(keys.crit, state[player].scores.crit);
+        params.set(keys.tac, state[player].scores.tac);
+        if (state[player].tacOp) params.set(keys.tacOp, state[player].tacOp);
+        if (state[player].primary) params.set(keys.primary, state[player].primary);
       });
-      connection.on('data', (message) => {
-        if (message.type === 'request-state' && sync.host) sendState(connection);
-        if (message.type === 'state-update' && sync.host) { applyRemoteState(message.state); broadcastState(); }
-        if (message.type === 'state' && !sync.host) applyRemoteState(message.state);
-      });
-      connection.on('close', () => { sync.connections = sync.connections.filter((item) => item !== connection); if (sync.connection === connection) sync.connection = null; });
-    }
-
-    function initializeSync() {
-      if (!window.Peer) return;
-      const hostPeer = new Peer(hostPeerId);
-      hostPeer.on('open', () => { sync.peer = hostPeer; sync.host = true; hostPeer.on('connection', handleConnection); });
-      hostPeer.on('error', (error) => {
-        if (error.type !== 'unavailable-id') return;
-        hostPeer.destroy();
-        const clientPeer = new Peer();
-        clientPeer.on('open', () => { sync.peer = clientPeer; const connection = clientPeer.connect(hostPeerId); handleConnection(connection); });
-      });
+      window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
     }
 
     function availableTacOps(player) {
@@ -392,7 +378,7 @@
       return scores.crit + killOpScore(player) + scores.tac + Math.ceil(selectedScore / 2);
     }
 
-    function render(share = true) {
+    function render() {
       $('#turning-point-value').textContent = state.turningPoint === 5 ? 'END' : state.turningPoint;
       $$('[data-initiative]').forEach((button) => button.classList.toggle('active', button.dataset.initiative === state.initiative));
       ['left', 'right'].forEach((player) => {
@@ -413,7 +399,7 @@
       const revealWinner = state.turningPoint === 5;
       $('[data-total="left"]').classList.toggle('winner', revealWinner && leftTotal >= rightTotal);
       $('[data-total="right"]').classList.toggle('winner', revealWinner && rightTotal >= leftTotal);
-      if (share) broadcastState();
+      writeUrlState();
     }
 
     function setTeam(player, team) {
@@ -440,8 +426,8 @@
         killGrades = await killGradesResponse.json();
         populateTeamOptions();
         populateStartingOperatives();
+        readUrlState();
         render();
-        initializeSync();
       } catch (error) {
         showError('The scorecard data could not be loaded. Run this site through a local web server or GitHub Pages.');
         console.error(error);

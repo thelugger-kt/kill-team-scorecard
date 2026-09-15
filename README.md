@@ -21,4 +21,10 @@ Open `http://localhost:8000` in your browser.
 
 The expected URL is `https://thelugger-kt.github.io/kill-team-scorecard/`.
 
-Scores are intentionally held in memory only and are cleared when the page is refreshed or reset.
+## URL state and OBS
+
+Each browser instance is independent. The current scorecard is encoded into the URL as query parameters, so refreshing preserves the state and OBS can read the same live URL without allowing another browser to change the game.
+
+The main parameters are `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftRemaining`, `rightRemaining`, `leftTeam`, `rightTeam`, `leftStart`, `rightStart`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`, `tp`, and `initiative`.
+
+Example: `https://thelugger-kt.github.io/kill-team-scorecard/?leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`
