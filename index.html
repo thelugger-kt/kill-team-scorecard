@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#17191b">
   <title>Kill Team Scorecard</title>
   <style>
@@ -30,7 +30,7 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { min-height: 100%; }
+    html, body { min-height: 100%; touch-action: manipulation; }
     body {
       margin: 0;
       color: var(--ink);
@@ -632,6 +632,7 @@
 
     $('#reset-game').addEventListener('click', resetGame);
     $('#new-game').addEventListener('click', createNewRoom);
+    document.addEventListener('gesturestart', (event) => event.preventDefault());
     initialize();
   </script>
 </body>
