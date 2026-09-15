@@ -148,7 +148,7 @@
     .turning-minus { grid-area: 3 / 4; justify-self: end; }
     .turning-value { grid-area: 3 / 5; justify-self: center; }
     .turning-plus { grid-area: 3 / 6; justify-self: start; }
-    .layout-row { min-height: 64px; border-bottom: 1px solid var(--line); }
+    .layout-row { min-height: 64px; padding: 0 22px; border-bottom: 1px solid var(--line); }
     .layout-row .score-buttons { margin: 0; }
     .left-buttons { grid-column: 1 / 4; justify-self: end; }
     .right-buttons { grid-column: 7 / 10; justify-self: start; }
@@ -200,6 +200,7 @@
       .total-value { font-size: 35px; }
       .score-layout { --layout-columns: minmax(0, 1fr) 26px minmax(26px, .45fr) 34px 58px 34px minmax(26px, .45fr) 26px minmax(0, 1fr); }
       .setup-grid { padding-left: 10px; padding-right: 10px; }
+      .layout-row { padding-left: 10px; padding-right: 10px; }
       .grid-score { font-size: 34px; }
       .center-label { font-size: 16px; }
       .killed-label-left, .killed-label-right { display: none; }
