@@ -120,6 +120,7 @@
     .total-side { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 17px 22px 19px; }
     .total-side.right { flex-direction: row-reverse; }
     .total-side.winner { background: rgba(237, 93, 39, 0.2); box-shadow: inset 0 0 0 1px var(--orange); }
+    .total-value.winner { color: #fff0e9; text-shadow: 0 0 18px rgba(237, 93, 39, 0.85); }
     .total-label { color: var(--muted); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
     .total-value { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 0.8; }
     .total-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; text-align: center; }
@@ -131,6 +132,48 @@
     footer span { color: var(--orange); }
     .error-message { display: none; max-width: 1560px; margin: 10px auto 0; padding: 12px 14px; border: 1px solid var(--orange-dark); color: #ffb199; background: rgba(146, 55, 23, 0.22); font-size: 11px; }
     .error-message.visible { display: block; }
+
+    .score-layout { --layout-columns: minmax(0, 1.5fr) 44px minmax(85px, .85fr) minmax(70px, .75fr) minmax(118px, 1fr) minmax(70px, .75fr) minmax(85px, .85fr) 44px minmax(0, 1.5fr); }
+    .setup-grid, .layout-row { display: grid; grid-template-columns: var(--layout-columns); align-items: center; }
+    .setup-grid { grid-template-rows: 48px 34px 54px; gap: 10px 0; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+    .setup-grid select { min-width: 0; }
+    .team-left { grid-area: 1 / 1 / 2 / 4; }
+    .team-right { grid-area: 1 / 7 / 2 / 10; text-align: right; }
+    .operatives-left { grid-area: 2 / 1 / 3 / 4; }
+    .operatives-right { grid-area: 2 / 7 / 3 / 10; text-align: right; }
+    .initiative-left { grid-area: 1 / 4; justify-self: end; }
+    .initiative-label { grid-area: 1 / 5; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-align: center; text-transform: uppercase; }
+    .initiative-right { grid-area: 1 / 6; justify-self: start; }
+    .turning-label { grid-area: 2 / 4 / 3 / 7; color: var(--muted); font-size: 13px; letter-spacing: 0.16em; text-align: center; text-transform: uppercase; }
+    .turning-minus { grid-area: 3 / 4; justify-self: end; }
+    .turning-value { grid-area: 3 / 5; justify-self: center; }
+    .turning-plus { grid-area: 3 / 6; justify-self: start; }
+    .layout-row { min-height: 64px; border-bottom: 1px solid var(--line); }
+    .layout-row .score-buttons { margin: 0; }
+    .left-buttons { grid-column: 1 / 4; justify-self: end; }
+    .right-buttons { grid-column: 7 / 10; justify-self: start; }
+    .score-left { grid-column: 4; justify-self: end; }
+    .center-label { grid-column: 5; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
+    .score-right { grid-column: 6; justify-self: start; }
+    .grid-score { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 1; }
+    .killed-label-left { grid-column: 1; justify-self: end; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+    .killed-buttons-left { grid-column: 2; justify-self: center; }
+    .killed-count-left { grid-column: 3; justify-self: end; }
+    .killed-count-right { grid-column: 7; justify-self: start; }
+    .killed-buttons-right { grid-column: 8; justify-self: center; }
+    .killed-label-right { grid-column: 9; justify-self: start; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+    .tac-select-left { grid-column: 1 / 3; min-width: 0; }
+    .tac-buttons-left { grid-column: 3; justify-self: end; }
+    .tac-select-right { grid-column: 8 / 10; min-width: 0; }
+    .tac-buttons-right { grid-column: 7; justify-self: start; }
+    .primary-select-left { grid-column: 1 / 4; min-width: 0; }
+    .primary-select-right { grid-column: 7 / 10; min-width: 0; }
+    .primary-label { grid-column: 5; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 20px; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
+    .primary-value-left { grid-column: 4; justify-self: end; }
+    .primary-value-right { grid-column: 6; justify-self: start; }
+    .initiative-choice { width: 38px; height: 38px; border: 1px solid transparent; color: var(--faint); background: transparent; font-size: 31px; line-height: 1; }
+    .initiative-choice.active { color: var(--orange-hot); }
+    .initiative-choice:focus-visible { border-color: var(--orange); outline: none; }
 
     @media (max-width: 760px) {
       .app-shell { padding: 14px 12px; }
@@ -149,6 +192,11 @@
       .total-side { padding-left: 10px; padding-right: 10px; }
       .total-label { font-size: 8px; }
       .total-value { font-size: 35px; }
+      .score-layout { --layout-columns: minmax(0, 1fr) 26px minmax(26px, .45fr) 34px 58px 34px minmax(26px, .45fr) 26px minmax(0, 1fr); }
+      .setup-grid { padding-left: 10px; padding-right: 10px; }
+      .grid-score { font-size: 34px; }
+      .center-label { font-size: 16px; }
+      .killed-label-left, .killed-label-right { display: none; }
     }
   </style>
 </head>
@@ -160,71 +208,51 @@
       </div>
     </header>
 
-    <section class="scorecard" aria-label="Kill Team scorecard">
-      <div class="topline">
-        <div class="team-panel">
-          <select id="left-team" data-player="left" aria-label="Left Kill Team"></select>
-          <select id="left-operatives" data-player="left" aria-label="Left Starting Operatives"></select>
-          <select data-op="tac" data-player="left" aria-label="Left Tac Op"></select>
-        </div>
-        <div class="turning-point">
-          <span class="section-kicker">Turning Point</span>
-          <div class="counter">
-            <button class="icon-button" type="button" data-counter="turningPoint" data-change="-1" aria-label="Decrease turning point">−</button>
-            <output id="turning-point-value" class="counter-value">0</output>
-            <button class="icon-button" type="button" data-counter="turningPoint" data-change="1" aria-label="Increase turning point">+</button>
-          </div>
-          <div class="initiative" aria-label="Initiative selector">
-            <button type="button" data-initiative="left" aria-label="Left player has initiative">◀</button>
-            <span>Initiative</span>
-            <button type="button" data-initiative="right" aria-label="Right player has initiative">▶</button>
-          </div>
-        </div>
-        <div class="team-panel right">
-          <select id="right-team" data-player="right" aria-label="Right Kill Team"></select>
-          <select id="right-operatives" data-player="right" aria-label="Right Starting Operatives"></select>
-          <select data-op="tac" data-player="right" aria-label="Right Tac Op"></select>
-        </div>
+    <section class="scorecard score-layout" aria-label="Kill Team scorecard">
+      <div class="setup-grid">
+        <select id="left-team" class="team-left" data-player="left" aria-label="Left Kill Team"></select>
+        <select id="right-team" class="team-right" data-player="right" aria-label="Right Kill Team"></select>
+        <select id="left-operatives" class="operatives-left" data-player="left" aria-label="Left Starting Non-Expendable Operatives"></select>
+        <select id="right-operatives" class="operatives-right" data-player="right" aria-label="Right Starting Non-Expendable Operatives"></select>
+        <button class="initiative-choice initiative-left active" type="button" data-initiative="left" aria-label="Left player has initiative">◀</button>
+        <span class="initiative-label">Initiative</span>
+        <button class="initiative-choice initiative-right" type="button" data-initiative="right" aria-label="Right player has initiative">▶</button>
+        <span class="turning-label">Turning Point</span>
+        <button class="icon-button turning-minus" type="button" data-counter="turningPoint" data-change="-1" aria-label="Decrease turning point">−</button>
+        <output id="turning-point-value" class="counter-value turning-value">0</output>
+        <button class="icon-button turning-plus" type="button" data-counter="turningPoint" data-change="1" aria-label="Increase turning point">+</button>
       </div>
 
-      <div class="cp-scores">
-        <section class="cp-side" data-side="left" aria-label="Left CP score">
-          <div class="side-control"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div><output class="score-number" data-score="cp">0</output></div>
-        </section>
-        <div class="cp-center"><output class="center-score" data-player="left" data-score="cp">0</output><span>CP</span><output class="center-score" data-player="right" data-score="cp">0</output></div>
-        <section class="cp-side right" data-side="right" aria-label="Right CP score">
-          <div class="score-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase right CP">+</button><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease right CP">−</button></div>
-        </section>
+      <div class="layout-row" data-side="left">
+        <div class="score-buttons left-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div>
+        <output class="grid-score score-left" data-player="left" data-score="cp">0</output><span class="center-label">Command Points</span><output class="grid-score score-right" data-player="right" data-score="cp">0</output>
+        <div class="score-buttons right-buttons" data-side="right"><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase right CP">+</button><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease right CP">−</button></div>
       </div>
 
-      <div class="scores">
-        <section class="score-side" data-side="left" aria-label="Left operation scores">
-          <div class="score-rows">
-            <div class="score-row plain-score-row"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease left score">−</button><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase left score">+</button></div></div>
-            <div class="score-row plain-score-row"><div class="kill-control"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="killed" data-change="-1" aria-label="Decrease left operatives killed">−</button><button class="icon-button" type="button" data-score-change="killed" data-change="1" aria-label="Increase left operatives killed">+</button></div><output class="killed-count" data-player="left" data-score="killed">0</output></div></div>
-            <div class="score-row plain-score-row"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease left score">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase left score">+</button></div></div>
-          </div>
-        </section>
-        <div class="row-labels"><div class="row-label"><output class="center-score" data-player="left" data-score="crit">0</output><strong>CRIT OP</strong><output class="center-score" data-player="right" data-score="crit">0</output></div><div class="row-label"><output class="center-score" data-player="left" data-score="kill">0</output><strong>KILL OP</strong><output class="center-score" data-player="right" data-score="kill">0</output></div><div class="row-label"><output class="center-score" data-player="left" data-score="tac">0</output><strong>TAC OP</strong><output class="center-score" data-player="right" data-score="tac">0</output></div></div>
-        <section class="score-side right" data-side="right" aria-label="Right operation scores">
-          <div class="score-rows">
-            <div class="score-row plain-score-row"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase right score">+</button><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease right score">−</button></div></div>
-            <div class="score-row plain-score-row"><div class="kill-control right"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="killed" data-change="1" aria-label="Increase right operatives killed">+</button><button class="icon-button" type="button" data-score-change="killed" data-change="-1" aria-label="Decrease right operatives killed">−</button></div><output class="killed-count" data-player="right" data-score="killed">0</output></div></div>
-            <div class="score-row plain-score-row"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase right score">+</button><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease right score">−</button></div></div>
-          </div>
-        </section>
+      <div class="layout-row" data-side="left">
+        <div class="score-buttons left-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease left Crit Op">−</button><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase left Crit Op">+</button></div>
+        <output class="grid-score score-left" data-player="left" data-score="crit">0</output><span class="center-label">Crit Op</span><output class="grid-score score-right" data-player="right" data-score="crit">0</output>
+        <div class="score-buttons right-buttons" data-side="right"><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase right Crit Op">+</button><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease right Crit Op">−</button></div>
       </div>
 
-      <div class="primary-row">
-        <div class="primary-side"><select class="primary-operation" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value=""></option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select></div>
-        <div class="primary-center"><output class="center-score" data-player="left" data-primary-value>0</output><span>Primary Op</span><output class="center-score" data-player="right" data-primary-value>0</output></div>
-        <div class="primary-side right"><select class="primary-operation" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value=""></option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select></div>
+      <div class="layout-row" data-side="left">
+        <span class="killed-label-left">Operatives Killed</span><div class="score-buttons killed-buttons-left" data-side="left"><button class="icon-button" type="button" data-score-change="killed" data-change="-1" aria-label="Decrease left operatives killed">−</button><button class="icon-button" type="button" data-score-change="killed" data-change="1" aria-label="Increase left operatives killed">+</button></div><output class="grid-score killed-count-left" data-player="left" data-score="killed">0</output>
+        <output class="grid-score score-left" data-player="left" data-score="kill">0</output><span class="center-label">Kill Op</span><output class="grid-score score-right" data-player="right" data-score="kill">0</output>
+        <output class="grid-score killed-count-right" data-player="right" data-score="killed">0</output><div class="score-buttons killed-buttons-right" data-side="right"><button class="icon-button" type="button" data-score-change="killed" data-change="1" aria-label="Increase right operatives killed">+</button><button class="icon-button" type="button" data-score-change="killed" data-change="-1" aria-label="Decrease right operatives killed">−</button></div><span class="killed-label-right">Operatives Killed</span>
       </div>
 
-      <div class="totals">
-        <div class="total-side"><span class="total-label">TOTAL VP</span><output class="total-value" data-total="left">0</output></div>
-        <div class="total-center">TOTAL VP</div>
-        <div class="total-side right"><span class="total-label">TOTAL VP</span><output class="total-value" data-total="right">0</output></div>
+      <div class="layout-row">
+        <select class="tac-select-left" data-op="tac" data-player="left" aria-label="Left Tac Op"></select><div class="score-buttons tac-buttons-left" data-side="left"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease left Tac Op">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase left Tac Op">+</button></div>
+        <output class="grid-score score-left" data-player="left" data-score="tac">0</output><span class="center-label">Tac Op</span><output class="grid-score score-right" data-player="right" data-score="tac">0</output>
+        <div class="score-buttons tac-buttons-right" data-side="right"><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase right Tac Op">+</button><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease right Tac Op">−</button></div><select class="tac-select-right" data-op="tac" data-player="right" aria-label="Right Tac Op"></select>
+      </div>
+
+      <div class="layout-row">
+        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><output class="grid-score primary-value-left" data-player="left" data-primary-value>0</output><span class="primary-label">Primary</span><output class="grid-score primary-value-right" data-player="right" data-primary-value>0</output><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
+      </div>
+
+      <div class="layout-row totals">
+        <output class="total-value score-left" data-total="left">0</output><span class="total-center">Total VP</span><output class="total-value score-right" data-total="right">0</output>
       </div>
     </section>
 
@@ -237,8 +265,8 @@
     const state = {
       turningPoint: 0,
       initiative: 'left',
-      left: { team: '', startingOperatives: 5, operativesKilled: 0, scores: { cp: 0, crit: 0, tac: 0 }, tacOp: '', primary: '' },
-      right: { team: '', startingOperatives: 5, operativesKilled: 0, scores: { cp: 0, crit: 0, tac: 0 }, tacOp: '', primary: '' }
+      left: { team: '', startingOperatives: '', operativesKilled: 0, scores: { cp: 0, crit: 0, tac: 0 }, tacOp: '', primary: '' },
+      right: { team: '', startingOperatives: '', operativesKilled: 0, scores: { cp: 0, crit: 0, tac: 0 }, tacOp: '', primary: '' }
     };
     let teamOptions = [];
     let tacOps = [];
@@ -313,9 +341,8 @@
       ['left', 'right'].forEach((player) => {
         $(`#${player}-team`).value = state[player].team;
         $(`#${player}-operatives`).value = state[player].startingOperatives;
-        const side = $(`.score-side[data-side="${player}"]`);
-        const cpSide = $(`.cp-side[data-side="${player}"]`);
         Object.entries(state[player].scores).filter(([score]) => score !== 'cp').forEach(([score, value]) => { $(`[data-score="${score}"][data-player="${player}"]`).textContent = score === 'kill' ? killOpScore(player) : value; });
+        $(`[data-score="kill"][data-player="${player}"]`).textContent = killOpScore(player);
         $(`[data-score="killed"][data-player="${player}"]`).textContent = state[player].operativesKilled;
         $(`[data-score="cp"][data-player="${player}"]`).textContent = state[player].scores.cp;
         $(`[data-total="${player}"]`).textContent = calculateTotal(player);
@@ -328,8 +355,8 @@
       const leftTotal = calculateTotal('left');
       const rightTotal = calculateTotal('right');
       const revealWinner = state.turningPoint === 5;
-      $('.total-side:not(.right)').classList.toggle('winner', revealWinner && leftTotal >= rightTotal);
-      $('.total-side.right').classList.toggle('winner', revealWinner && rightTotal >= leftTotal);
+      $('[data-total="left"]').classList.toggle('winner', revealWinner && leftTotal >= rightTotal);
+      $('[data-total="right"]').classList.toggle('winner', revealWinner && rightTotal >= leftTotal);
     }
 
     function setTeam(player, team) {
@@ -343,7 +370,7 @@
       if (!window.confirm('Reset both players and clear the current scorecard?')) return;
       state.turningPoint = 0;
       state.initiative = 'left';
-      ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].startingOperatives = 5; state[player].operativesKilled = 0; state[player].tacOp = ''; state[player].primary = ''; Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = 0; }); });
+      ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].startingOperatives = ''; state[player].operativesKilled = 0; state[player].tacOp = ''; state[player].primary = ''; Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = 0; }); });
       render();
     }
 
@@ -367,7 +394,7 @@
       const counterButton = event.target.closest('[data-counter]');
       if (counterButton) state[counterButton.dataset.counter] = Math.max(0, Math.min(5, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
       const scoreButton = event.target.closest('[data-score-change]');
-      if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; if (score === 'killed') state[side].operativesKilled = Math.max(0, Math.min(state[side].startingOperatives, state[side].operativesKilled + Number(scoreButton.dataset.change))); else { const maximum = score === 'cp' ? 12 : 6; state[side].scores[score] = Math.max(0, Math.min(maximum, state[side].scores[score] + Number(scoreButton.dataset.change))); } }
+      if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; if (score === 'killed') state[side].operativesKilled = Math.max(0, Math.min(Number(state[side].startingOperatives) || 0, state[side].operativesKilled + Number(scoreButton.dataset.change))); else { const maximum = score === 'cp' ? 12 : 6; state[side].scores[score] = Math.max(0, Math.min(maximum, state[side].scores[score] + Number(scoreButton.dataset.change))); } }
       const initiativeButton = event.target.closest('[data-initiative]');
       if (initiativeButton) state.initiative = initiativeButton.dataset.initiative;
       if (counterButton || scoreButton || initiativeButton) render();
@@ -377,7 +404,7 @@
       const teamSelect = event.target.closest('[id$="-team"]');
       if (teamSelect) setTeam(teamSelect.dataset.player, teamSelect.value);
       const operativesSelect = event.target.closest('[id$="-operatives"]');
-      if (operativesSelect) { state[operativesSelect.dataset.player].startingOperatives = Number(operativesSelect.value) || 5; state[operativesSelect.dataset.player].operativesKilled = Math.min(state[operativesSelect.dataset.player].operativesKilled, state[operativesSelect.dataset.player].startingOperatives); }
+      if (operativesSelect) { state[operativesSelect.dataset.player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[operativesSelect.dataset.player].operativesKilled = Math.min(state[operativesSelect.dataset.player].operativesKilled, Number(state[operativesSelect.dataset.player].startingOperatives) || 0); }
       const opSelect = event.target.closest('[data-op]');
       if (opSelect && opSelect.dataset.op === 'tac') state[opSelect.dataset.player].tacOp = opSelect.value;
       if (opSelect && opSelect.dataset.op === 'primary') state[opSelect.dataset.player].primary = opSelect.value;
