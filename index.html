@@ -391,7 +391,7 @@
       const counterButton = event.target.closest('[data-counter]');
       if (counterButton) state[counterButton.dataset.counter] = Math.max(0, Math.min(5, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
       const scoreButton = event.target.closest('[data-score-change]');
-      if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; if (score === 'killed') state[side].operativesKilled = Math.max(0, Math.min(Number(state[side].startingOperatives) || 0, state[side].operativesKilled + Number(scoreButton.dataset.change))); else { const maximum = score === 'cp' ? 12 : 6; state[side].scores[score] = Math.max(0, Math.min(maximum, state[side].scores[score] + Number(scoreButton.dataset.change))); } }
+      if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; if (score === 'killed') { const opposingSide = side === 'left' ? 'right' : 'left'; state[side].operativesKilled = Math.max(0, Math.min(Number(state[opposingSide].startingOperatives) || 0, state[side].operativesKilled + Number(scoreButton.dataset.change))); } else { const maximum = score === 'cp' ? 12 : 6; state[side].scores[score] = Math.max(0, Math.min(maximum, state[side].scores[score] + Number(scoreButton.dataset.change))); } }
       const initiativeButton = event.target.closest('[data-initiative]');
       if (initiativeButton) state.initiative = initiativeButton.dataset.initiative;
       if (counterButton || scoreButton || initiativeButton) render();
@@ -401,7 +401,7 @@
       const teamSelect = event.target.closest('[id$="-team"]');
       if (teamSelect) setTeam(teamSelect.dataset.player, teamSelect.value);
       const operativesSelect = event.target.closest('[id$="-operatives"]');
-      if (operativesSelect) { state[operativesSelect.dataset.player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[operativesSelect.dataset.player].operativesKilled = Math.min(state[operativesSelect.dataset.player].operativesKilled, Number(state[operativesSelect.dataset.player].startingOperatives) || 0); }
+      if (operativesSelect) { const player = operativesSelect.dataset.player; const opposingPlayer = player === 'left' ? 'right' : 'left'; state[player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[opposingPlayer].operativesKilled = Math.min(state[opposingPlayer].operativesKilled, Number(state[player].startingOperatives) || 0); }
       const opSelect = event.target.closest('[data-op]');
       if (opSelect && opSelect.dataset.op === 'tac') state[opSelect.dataset.player].tacOp = opSelect.value;
       if (opSelect && opSelect.dataset.op === 'primary') state[opSelect.dataset.player].primary = opSelect.value;
