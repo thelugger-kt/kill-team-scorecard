@@ -31,4 +31,6 @@ Example room: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
 
 OBS uses the same room URL: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1`
 
+Use the **New room** button to generate an isolated room URL for a new game. Do not reuse the same `room` value for separate games.
+
 Example encoded state: `https://thelugger-kt.github.io/kill-team-scorecard/?room=match-1&leftCp=2&rightCp=1&leftRemaining=5&rightRemaining=4&tp=3&initiative=left`
