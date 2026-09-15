@@ -20,6 +20,10 @@
       --orange: #ed5d27;
       --orange-hot: #ff7540;
       --orange-dark: #923717;
+      --tac-op-security: #142f5c;
+      --tac-op-seek-and-destroy: #5b1c24;
+      --tac-op-recon: #704018;
+      --tac-op-infiltration: #292d30;
       --left: #ed5d27;
       --right: #e5e2d9;
       --shadow: rgba(0, 0, 0, 0.34);
@@ -64,7 +68,11 @@
     .team-panel select + select { margin-top: 0; }
     select { width: 100%; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 0; padding: 0 42px 0 14px; color: var(--ink); background-color: var(--panel-alt); appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--orange) 50%), linear-gradient(135deg, var(--orange) 50%, transparent 50%); background-position: calc(100% - 19px) 21px, calc(100% - 13px) 21px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; outline: none; }
     select:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(237, 93, 39, 0.2); }
-    select:disabled { opacity: 0.85; cursor: default; }
+    .operatives-hidden { visibility: hidden; }
+    option[data-archetype='Security'] { background-color: var(--tac-op-security); }
+    option[data-archetype='Seek and Destroy'] { background-color: var(--tac-op-seek-and-destroy); }
+    option[data-archetype='Recon'] { background-color: var(--tac-op-recon); }
+    option[data-archetype='Infiltration'] { background-color: var(--tac-op-infiltration); }
     .team-panel.right select { text-align: right; }
     .turning-point { display: grid; place-items: center; align-content: center; gap: 7px; padding: 13px 8px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.48); }
     .section-kicker { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
@@ -133,7 +141,7 @@
 
     .score-layout { --layout-columns: minmax(0, 1.5fr) 44px minmax(85px, .85fr) minmax(70px, .75fr) minmax(118px, 1fr) minmax(70px, .75fr) minmax(85px, .85fr) 44px minmax(0, 1.5fr); }
     .setup-grid, .layout-row { display: grid; grid-template-columns: var(--layout-columns); align-items: center; }
-    .setup-grid { grid-template-rows: 48px 34px 54px; gap: 10px 0; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+    .setup-grid { grid-template-rows: 64px 42px 54px; gap: 10px 0; padding: 18px 22px 5px; border-bottom: 1px solid var(--line); }
     .setup-grid select { min-width: 0; }
     .team-left { grid-area: 1 / 1 / 2 / 4; }
     .team-right { grid-area: 1 / 7 / 2 / 10; text-align: right; }
@@ -146,6 +154,16 @@
     .turning-minus { grid-area: 3 / 4; justify-self: end; }
     .turning-value { grid-area: 3 / 5; justify-self: center; }
     .turning-plus { grid-area: 3 / 6; justify-self: start; }
+    .turning-plus.end-battle { font-size: 9px; letter-spacing: 0.08em; }
+    .modifier-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; grid-row: 3; align-self: stretch; }
+    .modifier-controls-left { grid-column: 1 / 4; }
+    .modifier-controls-right { grid-column: 7 / 10; }
+    .modifier-control { display: grid; grid-template-rows: 36px 16px; justify-items: center; align-items: center; color: var(--orange); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-align: center; white-space: nowrap; }
+    .modifier-control.unavailable { opacity: 0.45; }
+    .modifier-control input { width: 36px; height: 36px; margin: 0; border: 1px solid var(--line-strong); border-radius: 0; appearance: none; background-color: var(--panel-alt); cursor: pointer; }
+    .modifier-control input:checked { background-image: linear-gradient(var(--orange), var(--orange)); background-position: center; background-repeat: no-repeat; background-size: 18px 18px; }
+    .modifier-control input:disabled { cursor: default; }
+    .modifier-control input:focus-visible { outline: 2px solid var(--orange-hot); outline-offset: 2px; }
     .layout-row { min-height: 64px; padding: 0 22px; border-bottom: 1px solid var(--line); }
     .layout-row.cp-row { min-height: 86px; margin-bottom: 8px; border-bottom: 2px solid var(--line-strong); }
     .layout-row.cp-row .grid-score.score-left,
@@ -189,6 +207,10 @@
       .counter { gap: 3px; }
       .counter-value { min-width: 25px; font-size: 42px; }
       .counter .icon-button { width: 27px; height: 27px; font-size: 16px; }
+      .turning-plus.end-battle { font-size: 7px; }
+      .modifier-controls { gap: 2px; }
+      .modifier-control { grid-template-rows: 27px 16px; font-size: 8px; letter-spacing: 0.02em; }
+      .modifier-control input { width: 27px; height: 27px; }
       .score-stepper { gap: 3px; }
       .score-number { min-width: 30px; font-size: 36px; }
       .score-buttons .icon-button { width: 25px; height: 25px; font-size: 13px; }
@@ -220,6 +242,18 @@
         <select id="right-team" class="team-right" data-player="right" aria-label="Right Kill Team"></select>
         <select id="left-operatives" class="operatives-left" data-player="left" aria-label="Left Starting Non-Expendable Operatives"></select>
         <select id="right-operatives" class="operatives-right" data-player="right" aria-label="Right Starting Non-Expendable Operatives"></select>
+        <div class="modifier-controls modifier-controls-left" data-player="left">
+          <label class="modifier-control"><input type="checkbox" data-modifier="reroll" aria-label="Left Re-Roll"><span>Re-Roll</span></label>
+          <label class="modifier-control"><input type="checkbox" data-modifier="one" data-unlocks-at="1" aria-label="Left plus or minus 1"><span>-/+ 1</span></label>
+          <label class="modifier-control"><input type="checkbox" data-modifier="two" data-unlocks-at="2" aria-label="Left plus or minus 2"><span>-/+ 2</span></label>
+          <label class="modifier-control"><input type="checkbox" data-modifier="three" data-unlocks-at="3" aria-label="Left plus or minus 3"><span>-/+ 3</span></label>
+        </div>
+        <div class="modifier-controls modifier-controls-right" data-player="right">
+          <label class="modifier-control"><input type="checkbox" data-modifier="three" data-unlocks-at="3" aria-label="Right plus or minus 3"><span>-/+ 3</span></label>
+          <label class="modifier-control"><input type="checkbox" data-modifier="two" data-unlocks-at="2" aria-label="Right plus or minus 2"><span>-/+ 2</span></label>
+          <label class="modifier-control"><input type="checkbox" data-modifier="one" data-unlocks-at="1" aria-label="Right plus or minus 1"><span>-/+ 1</span></label>
+          <label class="modifier-control"><input type="checkbox" data-modifier="reroll" aria-label="Right Re-Roll"><span>Re-Roll</span></label>
+        </div>
         <button class="initiative-choice initiative-left active" type="button" data-initiative="left" aria-label="Left player has initiative">◀</button>
         <span class="initiative-label">Initiative</span>
         <button class="initiative-choice initiative-right" type="button" data-initiative="right" aria-label="Right player has initiative">▶</button>
@@ -270,9 +304,10 @@
   <script>
     const state = {
       turningPoint: 0,
+      battleEnded: false,
       initiative: 'left',
-      left: { team: '', startingOperatives: '', operativesRemaining: 0, scores: { cp: 0, crit: 0, tac: 0 }, tacOp: '', primary: '' },
-      right: { team: '', startingOperatives: '', operativesRemaining: 0, scores: { cp: 0, crit: 0, tac: 0 }, tacOp: '', primary: '' }
+      left: { team: '', startingOperatives: '', operativesRemaining: 0, modifiers: { reroll: false, one: false, two: false, three: false }, scores: { cp: 3, crit: 0, tac: 0 }, tacOp: '', primary: '' },
+      right: { team: '', startingOperatives: '', operativesRemaining: 0, modifiers: { reroll: false, one: false, two: false, three: false }, scores: { cp: 3, crit: 0, tac: 0 }, tacOp: '', primary: '' }
     };
     let teamOptions = [];
     let tacOps = [];
@@ -310,20 +345,20 @@
       if (!team || options.length === 0) {
         select.innerHTML = '<option value="">Starting Non-Expendable Operatives</option>';
         select.value = '';
-        select.disabled = true;
+        select.classList.add('operatives-hidden');
         state[player].startingOperatives = '';
       } else if (options.length === 1) {
         select.innerHTML = `<option value="${options[0]}">${options[0]}</option>`;
         select.value = String(options[0]);
-        select.disabled = true;
+        select.classList.add('operatives-hidden');
         state[player].startingOperatives = options[0];
       } else {
-        select.innerHTML = options.map((value) => `<option value="${value}">${value}</option>`).join('');
-        if (!options.includes(Number(state[player].startingOperatives))) {
-          state[player].startingOperatives = options[0];
+        select.innerHTML = '<option value="">Starting Non-Expendable Operatives</option>' + options.map((value) => `<option value="${value}">${value}</option>`).join('');
+        if (state[player].startingOperatives !== '' && !options.includes(Number(state[player].startingOperatives))) {
+          state[player].startingOperatives = '';
         }
         select.value = String(state[player].startingOperatives);
-        select.disabled = false;
+        select.classList.remove('operatives-hidden');
       }
     }
 
@@ -333,6 +368,7 @@
 
     const urlKeys = {
       turningPoint: 'tp',
+      battleEnded: 'battleEnded',
       initiative: 'initiative',
       left: { team: 'leftTeam', operativesRemaining: 'leftRemaining', kill: 'leftKill', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', tacOp: 'leftTacOp', primary: 'leftPrimary' },
       right: { team: 'rightTeam', operativesRemaining: 'rightRemaining', kill: 'rightKill', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', tacOp: 'rightTacOp', primary: 'rightPrimary' }
@@ -354,6 +390,9 @@
     function applyRemoteState(nextState) {
       if (!nextState || !nextState.left || !nextState.right) return;
       Object.assign(state, nextState);
+      ['left', 'right'].forEach((player) => {
+        state[player].modifiers = state[player].modifiers || { reroll: false, one: false, two: false, three: false };
+      });
       render(false);
     }
 
@@ -400,7 +439,9 @@
     function readUrlState() {
       const params = new URLSearchParams(window.location.search);
       if (!window.location.search) return;
-      state.turningPoint = Math.max(0, Math.min(5, Number(params.get(urlKeys.turningPoint)) || 0));
+      const legacyBattleEnded = Number(params.get(urlKeys.turningPoint)) >= 5;
+      state.turningPoint = Math.max(0, Math.min(4, Number(params.get(urlKeys.turningPoint)) || 0));
+      state.battleEnded = legacyBattleEnded || params.get(urlKeys.battleEnded) === 'true';
       state.initiative = params.get(urlKeys.initiative) === 'right' ? 'right' : 'left';
       ['left', 'right'].forEach((player) => {
         const keys = urlKeys[player];
@@ -408,7 +449,7 @@
         const options = state[player].team && startingKillGrades[state[player].team] ? startingKillGrades[state[player].team] : [];
         state[player].startingOperatives = options.length > 0 ? options[0] : '';
         state[player].operativesRemaining = params.has(keys.operativesRemaining) ? Math.max(0, Number(params.get(keys.operativesRemaining)) || 0) : (Number(state[player].startingOperatives) || 0);
-        state[player].scores.cp = Math.max(0, Math.min(12, Number(params.get(keys.cp)) || 0));
+        state[player].scores.cp = params.has(keys.cp) ? Math.max(0, Math.min(12, Number(params.get(keys.cp)) || 0)) : 3;
         state[player].scores.crit = Math.max(0, Math.min(6, Number(params.get(keys.crit)) || 0));
         state[player].scores.tac = Math.max(0, Math.min(6, Number(params.get(keys.tac)) || 0));
         state[player].tacOp = params.get(keys.tacOp) || '';
@@ -420,6 +461,7 @@
       const params = new URLSearchParams();
       params.set('game', gameName);
       params.set(urlKeys.turningPoint, state.turningPoint);
+      if (state.battleEnded) params.set(urlKeys.battleEnded, 'true');
       params.set(urlKeys.initiative, state.initiative);
       ['left', 'right'].forEach((player) => {
         const keys = urlKeys[player];
@@ -445,7 +487,7 @@
       const select = $(`[data-op="tac"][data-player="${player}"]`);
       const options = availableTacOps(player);
       const current = state[player].tacOp;
-      select.innerHTML = '<option value="">Reveal Tac Op</option>' + options.map((op) => `<option value="${escapeHtml(op.name)}">${escapeHtml(op.name)}</option>`).join('');
+      select.innerHTML = '<option value="">Reveal Tac Op</option>' + options.map((op) => `<option value="${escapeHtml(op.name)}" data-archetype="${escapeHtml(op.archetype)}">${escapeHtml(op.name)}</option>`).join('');
       state[player].tacOp = options.some((op) => op.name === current) ? current : '';
       select.value = state[player].tacOp;
     }
@@ -460,7 +502,7 @@
     function killOpScore(player) {
       const otherPlayer = player === 'left' ? 'right' : 'left';
       const rawScore = rawKillOpScore(player);
-      const bonus = state.turningPoint === 5 && rawScore > rawKillOpScore(otherPlayer) ? 1 : 0;
+      const bonus = state.battleEnded && rawScore > rawKillOpScore(otherPlayer) ? 1 : 0;
       return Math.min(6, rawScore + bonus);
     }
 
@@ -472,24 +514,36 @@
     }
 
     function render(share = true) {
-      $('#turning-point-value').textContent = state.turningPoint === 5 ? 'END' : state.turningPoint;
+      $('#turning-point-value').textContent = state.turningPoint;
+      const turningPlus = $('.turning-plus');
+      const isFinalTurningPoint = state.turningPoint === 4;
+      turningPlus.textContent = isFinalTurningPoint ? 'END' : '+';
+      turningPlus.setAttribute('aria-label', isFinalTurningPoint ? 'End battle' : 'Increase turning point');
+      turningPlus.classList.toggle('end-battle', isFinalTurningPoint);
+      turningPlus.disabled = state.battleEnded;
       $$('[data-initiative]').forEach((button) => button.classList.toggle('active', button.dataset.initiative === state.initiative));
       ['left', 'right'].forEach((player) => {
         $(`#${player}-team`).value = state[player].team;
         populateStartingOperatives(player);
+        $$(`[data-player="${player}"] [data-modifier]`).forEach((input) => {
+          const unavailable = Number(input.dataset.unlocksAt) > state.turningPoint;
+          input.disabled = unavailable;
+          input.closest('.modifier-control').classList.toggle('unavailable', unavailable);
+          input.checked = state[player].modifiers[input.dataset.modifier];
+        });
         Object.entries(state[player].scores).filter(([score]) => score !== 'cp').forEach(([score, value]) => { $(`[data-score="${score}"][data-player="${player}"]`).textContent = score === 'kill' ? killOpScore(player) : value; });
         $(`[data-score="kill"][data-player="${player}"]`).textContent = killOpScore(player);
         $(`[data-score="remaining"][data-player="${player}"]`).textContent = state[player].operativesRemaining;
         $(`[data-score="cp"][data-player="${player}"]`).textContent = state[player].scores.cp;
         $(`[data-total="${player}"]`).textContent = calculateTotal(player);
         $(`[data-op="primary"][data-player="${player}"]`).value = state[player].primary;
-        $(`[data-op="primary"][data-player="${player}"]`).disabled = state.turningPoint !== 5;
-        $(`[data-op="primary"][data-player="${player}"]`).setAttribute('aria-hidden', String(state.turningPoint !== 5));
+        $(`[data-op="primary"][data-player="${player}"]`).disabled = !state.battleEnded;
+        $(`[data-op="primary"][data-player="${player}"]`).setAttribute('aria-hidden', String(!state.battleEnded));
         populateTacOp(player);
       });
       const leftTotal = calculateTotal('left');
       const rightTotal = calculateTotal('right');
-      const revealWinner = state.turningPoint === 5;
+      const revealWinner = state.battleEnded;
       $('[data-total="left"]').classList.toggle('winner', revealWinner && leftTotal >= rightTotal);
       $('[data-total="right"]').classList.toggle('winner', revealWinner && rightTotal >= leftTotal);
       writeUrlState();
@@ -500,7 +554,7 @@
       state[player].team = team;
       state[player].tacOp = '';
       const options = team && startingKillGrades[team] ? startingKillGrades[team] : [];
-      state[player].startingOperatives = options.length > 0 ? options[0] : '';
+      state[player].startingOperatives = options.length === 1 ? options[0] : '';
       state[player].operativesRemaining = Number(state[player].startingOperatives) || 0;
       populateTacOp(player);
       render();
@@ -509,8 +563,9 @@
     function resetGame() {
       if (!window.confirm('Reset both players and clear the current scorecard?')) return;
       state.turningPoint = 0;
+      state.battleEnded = false;
       state.initiative = 'left';
-      ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].startingOperatives = ''; state[player].operativesRemaining = 0; state[player].tacOp = ''; state[player].primary = ''; Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = 0; }); });
+      ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].startingOperatives = ''; state[player].operativesRemaining = 0; state[player].tacOp = ''; state[player].primary = ''; Object.keys(state[player].modifiers).forEach((modifier) => { state[player].modifiers[modifier] = false; }); Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = score === 'cp' ? 3 : 0; }); });
       render();
     }
 
@@ -545,7 +600,14 @@
 
     document.addEventListener('click', (event) => {
       const counterButton = event.target.closest('[data-counter]');
-      if (counterButton) state[counterButton.dataset.counter] = Math.max(0, Math.min(5, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
+      if (counterButton) {
+        if (counterButton.dataset.counter === 'turningPoint' && state.turningPoint === 4 && Number(counterButton.dataset.change) > 0) {
+          state.battleEnded = true;
+        } else {
+          state[counterButton.dataset.counter] = Math.max(0, Math.min(4, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
+          if (counterButton.dataset.counter === 'turningPoint') state.battleEnded = false;
+        }
+      }
       const scoreButton = event.target.closest('[data-score-change]');
       if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; if (score === 'remaining') { const maximum = Number(state[side].startingOperatives) || 0; state[side].operativesRemaining = Math.max(0, Math.min(maximum, state[side].operativesRemaining + Number(scoreButton.dataset.change))); } else { const maximum = score === 'cp' ? 12 : 6; state[side].scores[score] = Math.max(0, Math.min(maximum, state[side].scores[score] + Number(scoreButton.dataset.change))); } }
       const initiativeButton = event.target.closest('[data-initiative]');
@@ -558,6 +620,8 @@
       if (teamSelect) setTeam(teamSelect.dataset.player, teamSelect.value);
       const operativesSelect = event.target.closest('[id$="-operatives"]');
       if (operativesSelect) { const player = operativesSelect.dataset.player; state[player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[player].operativesRemaining = Number(state[player].startingOperatives) || 0; render(); }
+      const modifier = event.target.closest('[data-modifier]');
+      if (modifier) { const player = modifier.closest('[data-player]').dataset.player; state[player].modifiers[modifier.dataset.modifier] = modifier.checked; render(); }
       const opSelect = event.target.closest('[data-op]');
       if (opSelect && opSelect.dataset.op === 'tac') state[opSelect.dataset.player].tacOp = opSelect.value;
       if (opSelect && opSelect.dataset.op === 'primary') state[opSelect.dataset.player].primary = opSelect.value;
