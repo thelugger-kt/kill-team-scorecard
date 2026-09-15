@@ -51,7 +51,7 @@
 
     button, select { font: inherit; }
     button { cursor: pointer; }
-    .app-shell { min-height: 100vh; padding: 20px 28px 16px; }
+    .app-shell { min-height: 100vh; padding: 16px 28px; }
     .app-header { display: flex; align-items: end; max-width: 1560px; margin: 0 auto 22px; }
     .eyebrow { margin: 0 0 5px; color: var(--orange); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
     h1, h2, h3, p { margin: 0; }
@@ -156,12 +156,12 @@
     .center-label { grid-column: 5; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
     .score-right { grid-column: 6; justify-self: start; }
     .grid-score { color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 1; }
-    .killed-label-left { grid-column: 1; justify-self: end; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+    .killed-label-left { grid-column: 1; justify-self: start; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; text-align: left; white-space: nowrap; }
     .killed-buttons-left { grid-column: 2; justify-self: center; }
     .killed-count-left { grid-column: 3; justify-self: end; }
     .killed-count-right { grid-column: 7; justify-self: start; }
     .killed-buttons-right { grid-column: 8; justify-self: center; }
-    .killed-label-right { grid-column: 9; justify-self: start; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+    .killed-label-right { grid-column: 9; justify-self: end; color: var(--muted); font-size: 10px; letter-spacing: 0.06em; text-align: right; white-space: nowrap; }
     .tac-select-left { grid-column: 1 / 3; min-width: 0; }
     .tac-buttons-left { grid-column: 3; justify-self: end; }
     .tac-select-right { grid-column: 8 / 10; min-width: 0; }
@@ -174,6 +174,12 @@
     .initiative-choice { width: 38px; height: 38px; border: 1px solid transparent; color: var(--faint); background: transparent; font-size: 31px; line-height: 1; }
     .initiative-choice.active { color: var(--orange-hot); }
     .initiative-choice:focus-visible { border-color: var(--orange); outline: none; }
+    .layout-row.totals { min-height: 110px; background: #1b1e20; }
+    .layout-row.totals .total-center { grid-column: 5; border: 0; font-size: 34px; }
+    .layout-row.totals .total-value { font-size: 68px; line-height: 1; }
+    .actions { justify-content: space-between; margin-top: 14px; }
+    .actions .credit { color: var(--faint); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .actions .credit span { color: var(--orange); }
 
     @media (max-width: 760px) {
       .app-shell { padding: 14px 12px; }
@@ -197,17 +203,14 @@
       .grid-score { font-size: 34px; }
       .center-label { font-size: 16px; }
       .killed-label-left, .killed-label-right { display: none; }
+      .layout-row.totals { min-height: 78px; }
+      .layout-row.totals .total-center { font-size: 21px; }
+      .layout-row.totals .total-value { font-size: 46px; }
     }
   </style>
 </head>
 <body>
   <main class="app-shell">
-    <header class="app-header">
-      <div>
-        <p class="eyebrow">Kill Team // Battle Record</p>
-      </div>
-    </header>
-
     <section class="scorecard score-layout" aria-label="Kill Team scorecard">
       <div class="setup-grid">
         <select id="left-team" class="team-left" data-player="left" aria-label="Left Kill Team"></select>
@@ -225,7 +228,7 @@
 
       <div class="layout-row" data-side="left">
         <div class="score-buttons left-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div>
-        <output class="grid-score score-left" data-player="left" data-score="cp">0</output><span class="center-label">Command Points</span><output class="grid-score score-right" data-player="right" data-score="cp">0</output>
+        <output class="grid-score score-left" data-player="left" data-score="cp">0</output><span class="center-label">CP</span><output class="grid-score score-right" data-player="right" data-score="cp">0</output>
         <div class="score-buttons right-buttons" data-side="right"><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase right CP">+</button><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease right CP">−</button></div>
       </div>
 
@@ -256,9 +259,8 @@
       </div>
     </section>
 
-    <div class="actions"><p class="helper">Scores are held in this session only. Reset clears both players.</p><button id="reset-game" class="reset-button" type="button">Reset game</button></div>
+    <div class="actions"><p class="credit">Made by <span>Shawn the Lugger</span></p><button id="reset-game" class="reset-button" type="button">Reset game</button></div>
     <p id="error-message" class="error-message" role="alert"></p>
-    <footer>Made by <span>Shawn the Lugger</span></footer>
   </main>
 
   <script>
