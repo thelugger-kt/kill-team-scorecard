@@ -72,15 +72,15 @@
     .icon-button { width: 36px; height: 36px; border: 1px solid var(--line-strong); color: var(--ink); background: var(--panel-alt); font-size: 20px; line-height: 1; transition: border-color 140ms, color 140ms, background 140ms, transform 140ms; }
     .icon-button:hover, .icon-button:focus-visible { border-color: var(--orange); color: var(--orange-hot); background: #303438; outline: none; }
     .icon-button:active { transform: translateY(1px); }
-    .initiative { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .initiative button { border: 0; color: var(--faint); background: transparent; font-size: 17px; line-height: 1; }
+    .initiative { display: flex; align-items: center; gap: 18px; margin-top: 8px; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .initiative button { width: 34px; height: 34px; border: 1px solid transparent; color: var(--faint); background: transparent; font-size: 29px; line-height: 1; }
     .initiative button.active { color: var(--orange-hot); }
     .initiative button:focus-visible { outline: 1px solid var(--orange); outline-offset: 3px; }
 
     .scores { display: grid; grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr); }
     .cp-scores { display: grid; grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-    .cp-side { display: grid; place-items: center; min-height: 74px; padding: 9px 22px; }
-    .cp-side.right { text-align: right; }
+    .cp-side { display: flex; align-items: center; justify-content: flex-end; min-height: 74px; padding: 9px 22px; }
+    .cp-side.right { justify-content: flex-start; text-align: right; }
     .cp-center { display: grid; place-items: center; border-left: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; }
     .score-side { padding: 16px 22px 22px; }
     .score-side.right { text-align: right; }
@@ -89,14 +89,17 @@
     .score-side.right .score-number { order: 2; }
     .score-side.right .score-buttons { order: 1; }
     .score-rows { display: grid; gap: 9px; }
-    .score-row { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 7px 9px 7px 13px; border: 1px solid var(--line); background: rgba(41, 45, 48, 0.7); }
-    .score-row + .score-row { border-top-color: #53595b; }
-    .plain-score-row { justify-content: flex-end; padding: 7px 13px; }
+    .score-row { display: flex; align-items: center; min-height: 58px; padding: 7px 13px; }
+    .plain-score-row { justify-content: flex-end; }
     .score-side.right .plain-score-row { justify-content: flex-start; }
-    .score-stepper { display: flex; align-items: center; gap: 8px; }
-    .score-number { min-width: 28px; color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 34px; line-height: 1; text-align: center; }
-    .score-buttons { display: flex; gap: 4px; }
-    .score-buttons .icon-button { width: 31px; height: 31px; font-size: 16px; }
+    .score-stepper { display: flex; align-items: center; gap: 10px; }
+    .score-number { min-width: 42px; color: var(--orange-hot); font-family: 'Barlow Condensed', sans-serif; font-size: 45px; line-height: 1; text-align: center; }
+    .score-buttons { display: flex; gap: 4px; padding: 3px; border: 1px solid var(--line); background: rgba(41, 45, 48, 0.7); }
+    .score-buttons .icon-button { width: 34px; height: 34px; font-size: 18px; }
+    .side-control { display: flex; align-items: center; gap: 10px; }
+    .side-control.right { flex-direction: row-reverse; }
+    .side-control.right .score-buttons { flex-direction: row-reverse; }
+    .side-control .icon-button { width: 34px; height: 34px; font-size: 18px; }
     .row-labels { display: grid; align-content: center; gap: 9px; padding: 16px 10px 22px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.38); }
     .row-label { display: grid; place-items: center; min-height: 58px; color: var(--muted); font-size: 12px; letter-spacing: 0.1em; text-align: center; }
     .row-label strong { display: block; color: var(--orange); font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 0.12em; }
@@ -129,7 +132,7 @@
       .counter-value { min-width: 25px; font-size: 42px; }
       .counter .icon-button { width: 27px; height: 27px; font-size: 16px; }
       .score-stepper { gap: 3px; }
-      .score-number { min-width: 22px; font-size: 28px; }
+      .score-number { min-width: 30px; font-size: 36px; }
       .score-buttons .icon-button { width: 25px; height: 25px; font-size: 13px; }
       .score-row { padding-left: 7px; padding-right: 5px; }
       .total-side { padding-left: 10px; padding-right: 10px; }
@@ -175,28 +178,28 @@
 
       <div class="cp-scores">
         <section class="cp-side" data-side="left" aria-label="Left CP score">
-          <div class="score-stepper"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><output class="score-number" data-score="cp">0</output><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div>
+          <div class="side-control"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div><output class="score-number" data-score="cp">0</output></div>
         </section>
         <div class="cp-center">CP</div>
         <section class="cp-side right" data-side="right" aria-label="Right CP score">
-          <div class="score-stepper"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease right CP">−</button><output class="score-number" data-score="cp">0</output><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase right CP">+</button></div>
+          <div class="side-control right"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease right CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase right CP">+</button></div><output class="score-number" data-score="cp">0</output></div>
         </section>
       </div>
 
       <div class="scores">
         <section class="score-side" data-side="left" aria-label="Left operation scores">
           <div class="score-rows">
-            <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease left score">−</button><output class="score-number" data-score="crit">0</output><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase left score">+</button></div></div>
-            <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease left score">−</button><output class="score-number" data-score="kill">0</output><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase left score">+</button></div></div>
-            <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease left score">−</button><output class="score-number" data-score="tac">0</output><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase left score">+</button></div></div>
+            <div class="score-row plain-score-row"><div class="side-control"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease left score">−</button><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase left score">+</button></div><output class="score-number" data-score="crit">0</output></div></div>
+            <div class="score-row plain-score-row"><div class="side-control"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease left score">−</button><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase left score">+</button></div><output class="score-number" data-score="kill">0</output></div></div>
+            <div class="score-row plain-score-row"><div class="side-control"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease left score">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase left score">+</button></div><output class="score-number" data-score="tac">0</output></div></div>
           </div>
         </section>
         <div class="row-labels" aria-hidden="true"><div class="row-label"><strong>CRIT OP</strong></div><div class="row-label"><strong>KILL OP</strong></div><div class="row-label"><strong>TAC OP</strong></div></div>
         <section class="score-side right" data-side="right" aria-label="Right operation scores">
           <div class="score-rows">
-            <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease right score">−</button><output class="score-number" data-score="crit">0</output><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase right score">+</button></div></div>
-            <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease right score">−</button><output class="score-number" data-score="kill">0</output><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase right score">+</button></div></div>
-            <div class="score-row plain-score-row"><div class="score-stepper"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease right score">−</button><output class="score-number" data-score="tac">0</output><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase right score">+</button></div></div>
+            <div class="score-row plain-score-row"><div class="side-control right"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="crit" data-change="-1" aria-label="Decrease right score">−</button><button class="icon-button" type="button" data-score-change="crit" data-change="1" aria-label="Increase right score">+</button></div><output class="score-number" data-score="crit">0</output></div></div>
+            <div class="score-row plain-score-row"><div class="side-control right"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="kill" data-change="-1" aria-label="Decrease right score">−</button><button class="icon-button" type="button" data-score-change="kill" data-change="1" aria-label="Increase right score">+</button></div><output class="score-number" data-score="kill">0</output></div></div>
+            <div class="score-row plain-score-row"><div class="side-control right"><div class="score-buttons"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease right score">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase right score">+</button></div><output class="score-number" data-score="tac">0</output></div></div>
           </div>
         </section>
       </div>
