@@ -371,8 +371,8 @@
       turningPoint: 'tp',
       battleEnded: 'battleEnded',
       initiative: 'initiative',
-      left: { team: 'leftTeam', operativesRemaining: 'leftRemaining', kill: 'leftKill', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', tacOp: 'leftTacOp', primary: 'leftPrimary' },
-      right: { team: 'rightTeam', operativesRemaining: 'rightRemaining', kill: 'rightKill', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', tacOp: 'rightTacOp', primary: 'rightPrimary' }
+      left: { team: 'leftTeam', operativesRemaining: 'leftRemaining', kill: 'leftKill', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', total: 'leftTotal', tacOp: 'leftTacOp', primary: 'leftPrimary' },
+      right: { team: 'rightTeam', operativesRemaining: 'rightRemaining', kill: 'rightKill', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', total: 'rightTotal', tacOp: 'rightTacOp', primary: 'rightPrimary' }
     };
 
     function copyState() {
@@ -472,6 +472,7 @@
         params.set(keys.cp, state[player].scores.cp);
         params.set(keys.crit, state[player].scores.crit);
         params.set(keys.tac, state[player].scores.tac);
+        params.set(keys.total, calculateTotal(player));
         if (state[player].tacOp) params.set(keys.tacOp, state[player].tacOp);
         if (state[player].primary) params.set(keys.primary, state[player].primary);
       });
