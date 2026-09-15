@@ -278,7 +278,8 @@
     let killGrades = {};
     const sync = { peer: null, host: false, connections: [], connection: null };
     const params = new URLSearchParams(window.location.search);
-    const gameName = params.get('game') || 'main';
+    const createGameId = () => `match-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    const gameName = params.get('game') || createGameId();
     const roomSlug = gameName.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 18) || 'main';
     const roomHash = [...gameName].reduce((hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0, 7).toString(36);
     const roomKey = `${roomSlug}-${roomHash}`;
@@ -489,7 +490,7 @@
     }
 
     function createNewRoom() {
-      const newGame = `match-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+      const newGame = createGameId();
       window.location.href = `${window.location.pathname}?game=${encodeURIComponent(newGame)}`;
     }
 
