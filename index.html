@@ -277,7 +277,6 @@
     const sync = { peer: null, host: false, connections: [], connection: null };
     const params = new URLSearchParams(window.location.search);
     const roomName = params.get('room') || 'main';
-    const readOnly = params.get('view') === 'obs' || params.get('readonly') === '1';
     const roomKey = roomName.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 24) || 'main';
     const hostPeerId = `kill-team-scorecard-${roomKey}`;
 
@@ -393,7 +392,7 @@
     function writeUrlState() {
       const params = new URLSearchParams();
       params.set('room', roomName);
-      if (readOnly) params.set('view', 'obs');
+      if (params.get('view') === 'obs') params.set('view', 'obs');
       params.set(urlKeys.turningPoint, state.turningPoint);
       params.set(urlKeys.initiative, state.initiative);
       ['left', 'right'].forEach((player) => {
@@ -497,7 +496,6 @@
         populateStartingOperatives();
         readUrlState();
         render();
-        if (readOnly) $$('button, select').forEach((control) => { control.disabled = true; });
         initializeSync();
       } catch (error) {
         showError('The scorecard data could not be loaded. Run this site through a local web server or GitHub Pages.');
