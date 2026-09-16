@@ -64,6 +64,7 @@
     .team-panel select + select { margin-top: 0; }
     select { width: 100%; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 0; padding: 0 42px 0 14px; color: var(--ink); background-color: var(--panel-alt); appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--orange) 50%), linear-gradient(135deg, var(--orange) 50%, transparent 50%); background-position: calc(100% - 19px) 21px, calc(100% - 13px) 21px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; outline: none; }
     select:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(237, 93, 39, 0.2); }
+    select:disabled { opacity: 0.85; cursor: default; }
     .team-panel.right select { text-align: right; }
     .turning-point { display: grid; place-items: center; align-content: center; gap: 7px; padding: 13px 8px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: rgba(23, 25, 27, 0.48); }
     .section-kicker { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
@@ -276,6 +277,7 @@
     let teamOptions = [];
     let tacOps = [];
     let killGrades = {};
+    let startingKillGrades = {};
     const sync = { peer: null, host: false, connections: [], connection: null };
     const params = new URLSearchParams(window.location.search);
     const createGameId = () => `match-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -300,10 +302,29 @@
       });
     }
 
-    function populateStartingOperatives() {
-      $$('[id$="-operatives"]').forEach((select) => {
-        select.innerHTML = '<option value="">Starting Non-Expendable Operatives</option>' + Array.from({ length: 10 }, (_, index) => 5 + index).map((value) => `<option value="${value}">${value}</option>`).join('');
-      });
+    function populateStartingOperatives(player) {
+      const select = $(`#${player}-operatives`);
+      const team = state[player].team;
+      const options = team && startingKillGrades[team] ? startingKillGrades[team] : [];
+
+      if (!team || options.length === 0) {
+        select.innerHTML = '<option value="">Starting Non-Expendable Operatives</option>';
+        select.value = '';
+        select.disabled = true;
+        state[player].startingOperatives = '';
+      } else if (options.length === 1) {
+        select.innerHTML = `<option value="${options[0]}">${options[0]}</option>`;
+        select.value = String(options[0]);
+        select.disabled = true;
+        state[player].startingOperatives = options[0];
+      } else {
+        select.innerHTML = options.map((value) => `<option value="${value}">${value}</option>`).join('');
+        if (!options.includes(Number(state[player].startingOperatives))) {
+          state[player].startingOperatives = options[0];
+        }
+        select.value = String(state[player].startingOperatives);
+        select.disabled = false;
+      }
     }
 
     function escapeHtml(value) {
@@ -313,8 +334,8 @@
     const urlKeys = {
       turningPoint: 'tp',
       initiative: 'initiative',
-      left: { team: 'leftTeam', startingOperatives: 'leftStart', operativesRemaining: 'leftRemaining', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', tacOp: 'leftTacOp', primary: 'leftPrimary' },
-      right: { team: 'rightTeam', startingOperatives: 'rightStart', operativesRemaining: 'rightRemaining', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', tacOp: 'rightTacOp', primary: 'rightPrimary' }
+      left: { team: 'leftTeam', operativesRemaining: 'leftRemaining', kill: 'leftKill', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', tacOp: 'leftTacOp', primary: 'leftPrimary' },
+      right: { team: 'rightTeam', operativesRemaining: 'rightRemaining', kill: 'rightKill', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', tacOp: 'rightTacOp', primary: 'rightPrimary' }
     };
 
     function copyState() {
@@ -384,8 +405,9 @@
       ['left', 'right'].forEach((player) => {
         const keys = urlKeys[player];
         state[player].team = params.get(keys.team) || '';
-        state[player].startingOperatives = params.has(keys.startingOperatives) ? Number(params.get(keys.startingOperatives)) || '' : '';
-        state[player].operativesRemaining = params.has(keys.operativesRemaining) ? Math.max(0, Number(params.get(keys.operativesRemaining)) || 0) : Number(state[player].startingOperatives) || 0;
+        const options = state[player].team && startingKillGrades[state[player].team] ? startingKillGrades[state[player].team] : [];
+        state[player].startingOperatives = options.length > 0 ? options[0] : '';
+        state[player].operativesRemaining = params.has(keys.operativesRemaining) ? Math.max(0, Number(params.get(keys.operativesRemaining)) || 0) : (Number(state[player].startingOperatives) || 0);
         state[player].scores.cp = Math.max(0, Math.min(12, Number(params.get(keys.cp)) || 0));
         state[player].scores.crit = Math.max(0, Math.min(6, Number(params.get(keys.crit)) || 0));
         state[player].scores.tac = Math.max(0, Math.min(6, Number(params.get(keys.tac)) || 0));
@@ -402,8 +424,8 @@
       ['left', 'right'].forEach((player) => {
         const keys = urlKeys[player];
         if (state[player].team) params.set(keys.team, state[player].team);
-        if (state[player].startingOperatives !== '') params.set(keys.startingOperatives, state[player].startingOperatives);
         params.set(keys.operativesRemaining, state[player].operativesRemaining);
+        params.set(keys.kill, killOpScore(player));
         params.set(keys.cp, state[player].scores.cp);
         params.set(keys.crit, state[player].scores.crit);
         params.set(keys.tac, state[player].scores.tac);
@@ -454,7 +476,7 @@
       $$('[data-initiative]').forEach((button) => button.classList.toggle('active', button.dataset.initiative === state.initiative));
       ['left', 'right'].forEach((player) => {
         $(`#${player}-team`).value = state[player].team;
-        $(`#${player}-operatives`).value = state[player].startingOperatives;
+        populateStartingOperatives(player);
         Object.entries(state[player].scores).filter(([score]) => score !== 'cp').forEach(([score, value]) => { $(`[data-score="${score}"][data-player="${player}"]`).textContent = score === 'kill' ? killOpScore(player) : value; });
         $(`[data-score="kill"][data-player="${player}"]`).textContent = killOpScore(player);
         $(`[data-score="remaining"][data-player="${player}"]`).textContent = state[player].operativesRemaining;
@@ -477,6 +499,9 @@
     function setTeam(player, team) {
       state[player].team = team;
       state[player].tacOp = '';
+      const options = team && startingKillGrades[team] ? startingKillGrades[team] : [];
+      state[player].startingOperatives = options.length > 0 ? options[0] : '';
+      state[player].operativesRemaining = Number(state[player].startingOperatives) || 0;
       populateTacOp(player);
       render();
     }
@@ -496,13 +521,19 @@
 
     async function initialize() {
       try {
-        const [teamsResponse, tacOpsResponse, killGradesResponse] = await Promise.all([fetch('data/kill-teams.json'), fetch('data/tac-ops.json'), fetch('data/kill-grade.json')]);
-        if (!teamsResponse.ok || !tacOpsResponse.ok || !killGradesResponse.ok) throw new Error('Data files could not be loaded.');
+        const [teamsResponse, tacOpsResponse, killGradesResponse, startingGradesResponse] = await Promise.all([
+          fetch('data/kill-teams.json'),
+          fetch('data/tac-ops.json'),
+          fetch('data/kill-grade.json'),
+          fetch('data/starting-kill-grade.json')
+        ]);
+        if (!teamsResponse.ok || !tacOpsResponse.ok || !killGradesResponse.ok || !startingGradesResponse.ok) throw new Error('Data files could not be loaded.');
         teamOptions = await teamsResponse.json();
         tacOps = await tacOpsResponse.json();
         killGrades = await killGradesResponse.json();
+        startingKillGrades = await startingGradesResponse.json();
         populateTeamOptions();
-        populateStartingOperatives();
+        ['left', 'right'].forEach((player) => populateStartingOperatives(player));
         readUrlState();
         render();
         initializeSync();
@@ -526,7 +557,7 @@
       const teamSelect = event.target.closest('[id$="-team"]');
       if (teamSelect) setTeam(teamSelect.dataset.player, teamSelect.value);
       const operativesSelect = event.target.closest('[id$="-operatives"]');
-      if (operativesSelect) { const player = operativesSelect.dataset.player; state[player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[player].operativesRemaining = Number(state[player].startingOperatives) || 0; }
+      if (operativesSelect) { const player = operativesSelect.dataset.player; state[player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[player].operativesRemaining = Number(state[player].startingOperatives) || 0; render(); }
       const opSelect = event.target.closest('[data-op]');
       if (opSelect && opSelect.dataset.op === 'tac') state[opSelect.dataset.player].tacOp = opSelect.value;
       if (opSelect && opSelect.dataset.op === 'primary') state[opSelect.dataset.player].primary = opSelect.value;
