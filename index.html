@@ -185,8 +185,9 @@
     .tac-buttons-left { grid-column: 3; justify-self: end; }
     .tac-select-right { grid-column: 8 / 10; min-width: 0; }
     .tac-buttons-right { grid-column: 7; justify-self: start; }
-    .primary-select-left { grid-column: 1 / 4; min-width: 0; }
-    .primary-select-right { grid-column: 7 / 10; min-width: 0; }
+    .primary-select-left { grid-column: 1 / 3; min-width: 0; }
+    .primary-select-right { grid-column: 8 / 10; min-width: 0; }
+    .crit-op-select { grid-column: 4 / 7; min-width: 0; }
     .initiative-choice { width: 49px; height: 49px; border: 1px solid transparent; color: var(--faint); background: transparent; font-size: 40px; line-height: 1; }
     .initiative-choice.active { color: var(--orange-hot); }
     .initiative-choice:focus-visible { border-color: var(--orange); outline: none; }
@@ -288,7 +289,7 @@
       </div>
 
       <div class="layout-row">
-        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
+        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><select id="crit-op-select" class="crit-op-select" aria-label="Crit Op"></select><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Reveal Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
       </div>
 
       <div class="layout-row totals">
@@ -307,11 +308,13 @@
       turningPoint: 0,
       battleEnded: false,
       initiative: 'left',
+      critOp: '',
       left: { team: '', startingOperatives: '', operativesRemaining: 0, modifiers: { reroll: false, one: false, two: false, three: false }, scores: { cp: 3, crit: 0, tac: 0 }, tacOp: '', primary: '' },
       right: { team: '', startingOperatives: '', operativesRemaining: 0, modifiers: { reroll: false, one: false, two: false, three: false }, scores: { cp: 3, crit: 0, tac: 0 }, tacOp: '', primary: '' }
     };
     let teamOptions = [];
     let tacOps = [];
+    let critOps = [];
     let killGrades = {};
     let startingKillGrades = {};
     const sync = { peer: null, host: false, connections: [], connection: null };
@@ -336,6 +339,10 @@
       $$('[data-player][id$="-team"]').forEach((select) => {
         select.innerHTML = '<option value="">Select Kill Team</option>' + teamOptions.map((team) => `<option value="${escapeHtml(team.name)}">${escapeHtml(team.name)}</option>`).join('');
       });
+    }
+
+    function populateCritOps() {
+      $('#crit-op-select').innerHTML = '<option value="">Reveal Crit Op</option>' + critOps.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
     }
 
     function populateStartingOperatives(player) {
@@ -371,6 +378,7 @@
       turningPoint: 'tp',
       battleEnded: 'battleEnded',
       initiative: 'initiative',
+      critOp: 'critOp',
       left: { team: 'leftTeam', operativesRemaining: 'leftRemaining', kill: 'leftKill', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', total: 'leftTotal', tacOp: 'leftTacOp', primary: 'leftPrimary' },
       right: { team: 'rightTeam', operativesRemaining: 'rightRemaining', kill: 'rightKill', cp: 'rightCp', crit: 'rightCrit', tac: 'rightTac', total: 'rightTotal', tacOp: 'rightTacOp', primary: 'rightPrimary' }
     };
@@ -444,6 +452,7 @@
       state.turningPoint = Math.max(0, Math.min(4, Number(params.get(urlKeys.turningPoint)) || 0));
       state.battleEnded = legacyBattleEnded || params.get(urlKeys.battleEnded) === 'true';
       state.initiative = params.get(urlKeys.initiative) === 'right' ? 'right' : 'left';
+      state.critOp = params.get(urlKeys.critOp) || '';
       ['left', 'right'].forEach((player) => {
         const keys = urlKeys[player];
         state[player].team = params.get(keys.team) || '';
@@ -464,6 +473,7 @@
       params.set(urlKeys.turningPoint, state.turningPoint);
       if (state.battleEnded) params.set(urlKeys.battleEnded, 'true');
       params.set(urlKeys.initiative, state.initiative);
+      if (state.critOp) params.set(urlKeys.critOp, state.critOp);
       ['left', 'right'].forEach((player) => {
         const keys = urlKeys[player];
         if (state[player].team) params.set(keys.team, state[player].team);
@@ -524,6 +534,7 @@
       turningPlus.classList.toggle('end-battle', isFinalTurningPoint);
       turningPlus.disabled = state.battleEnded;
       $$('[data-initiative]').forEach((button) => button.classList.toggle('active', button.dataset.initiative === state.initiative));
+      $('#crit-op-select').value = state.critOp;
       ['left', 'right'].forEach((player) => {
         $(`#${player}-team`).value = state[player].team;
         populateStartingOperatives(player);
@@ -567,6 +578,7 @@
       state.turningPoint = 0;
       state.battleEnded = false;
       state.initiative = 'left';
+      state.critOp = '';
       ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].startingOperatives = ''; state[player].operativesRemaining = 0; state[player].tacOp = ''; state[player].primary = ''; Object.keys(state[player].modifiers).forEach((modifier) => { state[player].modifiers[modifier] = false; }); Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = score === 'cp' ? 3 : 0; }); });
       render();
     }
@@ -578,18 +590,21 @@
 
     async function initialize() {
       try {
-        const [teamsResponse, tacOpsResponse, killGradesResponse, startingGradesResponse] = await Promise.all([
+        const [teamsResponse, tacOpsResponse, critOpsResponse, killGradesResponse, startingGradesResponse] = await Promise.all([
           fetch('data/kill-teams.json'),
           fetch('data/tac-ops.json'),
+          fetch('data/crit-ops.json'),
           fetch('data/kill-grade.json'),
           fetch('data/starting-kill-grade.json')
         ]);
-        if (!teamsResponse.ok || !tacOpsResponse.ok || !killGradesResponse.ok || !startingGradesResponse.ok) throw new Error('Data files could not be loaded.');
+        if (!teamsResponse.ok || !tacOpsResponse.ok || !critOpsResponse.ok || !killGradesResponse.ok || !startingGradesResponse.ok) throw new Error('Data files could not be loaded.');
         teamOptions = await teamsResponse.json();
         tacOps = await tacOpsResponse.json();
+        critOps = await critOpsResponse.json();
         killGrades = await killGradesResponse.json();
         startingKillGrades = await startingGradesResponse.json();
         populateTeamOptions();
+        populateCritOps();
         ['left', 'right'].forEach((player) => populateStartingOperatives(player));
         readUrlState();
         render();
@@ -624,6 +639,8 @@
       if (operativesSelect) { const player = operativesSelect.dataset.player; state[player].startingOperatives = operativesSelect.value ? Number(operativesSelect.value) : ''; state[player].operativesRemaining = Number(state[player].startingOperatives) || 0; render(); }
       const modifier = event.target.closest('[data-modifier]');
       if (modifier) { const player = modifier.closest('[data-player]').dataset.player; state[player].modifiers[modifier.dataset.modifier] = modifier.checked; render(); }
+      const critOpSelect = event.target.closest('#crit-op-select');
+      if (critOpSelect) { state.critOp = critOpSelect.value; render(); }
       const opSelect = event.target.closest('[data-op]');
       if (opSelect && opSelect.dataset.op === 'tac') state[opSelect.dataset.player].tacOp = opSelect.value;
       if (opSelect && opSelect.dataset.op === 'primary') state[opSelect.dataset.player].primary = opSelect.value;

@@ -6,6 +6,7 @@ A responsive two-player Kill Team scorecard optimized for horizontal iPad play a
 
 - **Live Two-Player Scorecard**: Tracks CP, Crit Op, Kill Op (via operatives remaining thresholds), Tac Op, and Total VP for left and right players.
 - **CSV/JSON-Driven Operatives**: Automatically resolves starting non-expendable operative counts per Kill Team from `data/starting-kill-grade.json`. Single-count teams auto-select; multi-option teams present a dropdown defaulting to placeholder.
+- **Shared Crit Op Selector**: A single centered dropdown (sourced from `data/crit-ops.json`) records the mission's Crit Op name once, shared between both players.
 - **Tac Op Archetype Styling**: Colors Tac Op dropdown options according to archetype (Dark Blue for Security, Dark Red for Seek and Destroy, Dark Orange for Recon, Charcoal for Infiltration).
 - **Progressive Modifier Tracking**: Modifier checkboxes for Re-Roll and dice modifiers (-/+ 1, -/+ 2, -/+ 3) unlocking progressively by Turning Point (TP 0: Re-Roll only; TP 1: -/+ 1; TP 2: -/+ 2; TP 3+: -/+ 3).
 - **Battle Flow & End Game**: Turning Point progresses from 0 to 4. At TP 4, the `+` button transitions to `END`, unlocking Primary Op selection, computing final kill op bonuses, and declaring the winner.
@@ -44,6 +45,7 @@ The scorecard automatically keeps the URL query string updated with the current 
 | `tp` | Current Turning Point (`0` - `4`) |
 | `battleEnded` | Present and set to `'true'` when the game has ended |
 | `initiative` | Current player with initiative (`left` or `right`) |
+| `critOp` | Selected shared Crit Op name |
 | `leftTeam` / `rightTeam` | Selected Kill Team name |
 | `leftRemaining` / `rightRemaining` | Operatives remaining count |
 | `leftKill` / `rightKill` | Calculated Kill Op score |

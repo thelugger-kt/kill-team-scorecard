@@ -20,7 +20,8 @@ Kill Team Scorecard/
 │   ├── kill-teams.json            # Kill Team names and assigned archetypes
 │   ├── starting-kill-grade.json   # Starting non-expendable operative counts per team
 │   ├── kill-grade.json            # Threshold matrix for calculating Kill Op points
-│   └── tac-ops.json               # Tac Op cards, archetypes, and descriptions
+│   ├── tac-ops.json               # Tac Op cards, archetypes, and descriptions
+│   └── crit-ops.json              # Shared Crit Op names (flat list, no archetype)
 └── .github/workflows/
     └── pages.yml                  # GitHub Actions workflow for GitHub Pages deployment
 ```
@@ -35,6 +36,7 @@ const state = {
   turningPoint: 0,       // Integer: 0 to 4
   battleEnded: false,    // Boolean: true after "END" button is clicked at TP 4
   initiative: 'left',    // 'left' | 'right'
+  critOp: '',            // Shared Crit Op name, selected once for both players (data/crit-ops.json)
   left: {
     team: '',            // Selected team name string
     startingOperatives: '', // Selected starting non-expendable operative count (e.g. "10", "12")
@@ -51,7 +53,7 @@ const state = {
 ### 2. URL State Encoding (`writeUrlState` / `readUrlState`)
 The app automatically synchronizes score and match state to URL query parameters on every mutation.
 
-- **Included in URL**: `game`, `tp`, `battleEnded`, `initiative`, `leftTeam`, `rightTeam`, `leftRemaining`, `rightRemaining`, `leftKill`, `rightKill`, `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftTotal`, `rightTotal`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`.
+- **Included in URL**: `game`, `tp`, `battleEnded`, `initiative`, `critOp`, `leftTeam`, `rightTeam`, `leftRemaining`, `rightRemaining`, `leftKill`, `rightKill`, `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftTotal`, `rightTotal`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`.
 - **Intentionally excluded from URL**: `startingOperatives` and `modifiers` (only synced live via PeerJS to keep URL clean and focused on stream/score overlays).
 - **Backward Compatibility**: Handles legacy URLs where `tp >= 5` by interpreting them as `tp = 4` with `battleEnded = true`.
 
@@ -122,6 +124,10 @@ Options in the Tac Op select element are styled with background colors based on 
 - `Seek and Destroy`: `--tac-op-seek-and-destroy` (`#5b1c24` - Dark Red)
 - `Recon`: `--tac-op-recon` (`#704018` - Dark Orange)
 - `Infiltration`: `--tac-op-infiltration` (`#292d30` - Charcoal)
+
+### Primary Op Row & Crit Op Select
+- `.primary-select-left` / `.primary-select-right` (the Primary Op category dropdowns, revealed at battle end) are narrowed to `grid-column: 1 / 3` and `8 / 10` respectively, freeing the near-center columns.
+- `#crit-op-select` (`.crit-op-select`, `grid-column: 4 / 7`) sits centered between them as a single dropdown shared by both players, populated from `data/crit-ops.json`. It has no `data-op`/`data-player` attributes (unlike Tac Op/Primary Op selects) and is wired directly via its `#crit-op-select` id.
 
 ### Action Buttons & Credit
 - "Made by Shawn the Lugger" and "New game" / "Reset game" buttons are housed directly inside the `Total VP` row (`.layout-row.totals`), precisely aligned with the left and right team dropdown bounds.
