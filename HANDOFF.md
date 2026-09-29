@@ -68,9 +68,9 @@ The app automatically synchronizes score and match state to URL query parameters
 
 ### Starting Non-Expendable Operatives
 - Loaded from `data/starting-kill-grade.json`.
-- If a Kill Team has **only 1 option** (e.g. 6): starting operatives and operatives remaining are set automatically; the compact count button is disabled.
+- If a Kill Team has **only 1 option** (e.g. 6): starting operatives and operatives remaining are set automatically with no dialog shown.
 - If a Kill Team has **multiple options** (e.g. Brood Brothers with [13, 11, 10, 12]): choosing the team opens `#operatives-dialog` with the first count preselected. Confirming a count updates `startingOperatives` and adjusts `operativesRemaining` to the new starting value for a fresh roster, or clamps remaining operatives to the new maximum if play is already underway.
-- The compact `.operatives-picker` button sits beside the team selector, displays the current count, and reopens the dialog when needed. `startingOperatives` remains excluded from the URL; it continues to sync through PeerJS state.
+- The dialog only opens automatically when a team is selected (via `setTeam`); there is no persistent button to reopen it afterward — re-selecting the team (even the same one) reopens the dialog. `startingOperatives` remains excluded from the URL; it continues to sync through PeerJS state.
 
 ### Kill Op Calculation
 1. Opposing killed operatives = `opponent.startingOperatives - opponent.operativesRemaining`.
@@ -140,4 +140,4 @@ Options in the Tac Op select element are styled with background colors based on 
 1. **Keep Single-File Simplicity**: All runtime styles and scripts are consolidated in `index.html` to avoid build steps and maintain instant deployment.
 2. **Preserve Viewport Constraints**: The app is tuned for iPad 13" landscape (1366 × 1024). Keep layout heights and paddings balanced when modifying grid row heights.
 3. **URL State Minimalism**: When adding new fields, determine whether they belong in the URL query string (for OBS overlays) or should only live in runtime/PeerJS state.
-4. **Mobile Breakpoint**: Any changes to `.setup-grid`, `.layout-row`, or control sizes must have corresponding overrides inside `@media (max-width: 760px)`.
+4. **Mobile Breakpoint**: Any changes to `.setup-grid`, `.layout-row`, or control sizes must have corresponding overrides inside `@media (max-width: 760px)` (compact tablet/iPad-portrait sizing) and `@media (max-width: 600px)` (phone layout — both players shown side by side with narrower dropdowns; no player-switch toggle).
