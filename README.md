@@ -2,6 +2,10 @@
 
 A static two-player Kill Team scorecard for horizontal iPad play.
 
+## Phone Layout
+
+On narrow phone screens, use the Left/Right switch to choose which player's team, operative, and scoring controls are shown. Both players' CP, Crit Op, Kill Op, Tac Op, and Total VP remain visible, along with shared Turning Point and initiative controls. The existing side-by-side layout remains in use on wider screens, including iPad.
+
 ## Run locally
 
 Because the scorecard loads JSON data files, serve the folder through a local web server:
