@@ -68,8 +68,9 @@ The app automatically synchronizes score and match state to URL query parameters
 
 ### Starting Non-Expendable Operatives
 - Loaded from `data/starting-kill-grade.json`.
-- If a Kill Team has **only 1 option** (e.g. 10): the secondary dropdown is hidden (`operatives-hidden` / `visibility: hidden`) and the starting operative count is set automatically.
-- If a Kill Team has **multiple options** (e.g. Brood Brothers with [13, 11, 10, 12]): the secondary dropdown becomes visible and defaults to the placeholder `"Starting Non-Expendable Operatives"`. Operatives remaining remains 0 until a selection is made.
+- If a Kill Team has **only 1 option** (e.g. 6): starting operatives and operatives remaining are set automatically; the compact count button is disabled.
+- If a Kill Team has **multiple options** (e.g. Brood Brothers with [13, 11, 10, 12]): choosing the team opens `#operatives-dialog` with the first count preselected. Confirming a count updates `startingOperatives` and adjusts `operativesRemaining` to the new starting value for a fresh roster, or clamps remaining operatives to the new maximum if play is already underway.
+- The compact `.operatives-picker` button sits beside the team selector, displays the current count, and reopens the dialog when needed. `startingOperatives` remains excluded from the URL; it continues to sync through PeerJS state.
 
 ### Kill Op Calculation
 1. Opposing killed operatives = `opponent.startingOperatives - opponent.operativesRemaining`.
@@ -91,7 +92,7 @@ $$\text{Total VP} = \text{Crit Op} + \text{Kill Op} + \text{Tac Op} + \left\lcei
   - Highlights the winner in the Total VP display.
 
 ### Modifier Controls Progressive Availability
-Modifier checkboxes are displayed below the Starting Operatives row:
+Modifier checkboxes share the lower setup row with the Turning Point controls:
 - **Left order**: `Re-Roll`, `-/+ 1`, `-/+ 2`, `-/+ 3` (aligned left).
 - **Right order**: `-/+ 3`, `-/+ 2`, `-/+ 1`, `Re-Roll` (aligned right).
 - **Unlocking by TP**:

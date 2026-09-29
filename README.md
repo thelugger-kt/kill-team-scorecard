@@ -7,7 +7,7 @@ A responsive two-player Kill Team scorecard optimized for horizontal iPad play a
 - **Phone Layout**: Narrow screens show a Left/Right player switch for team, operative, modifier, Tac Op, and Primary Op controls while keeping both players' CP, Crit Op, Kill Op, Tac Op, and Total VP visible.
 - **iPad Layout Preserved**: The phone layout is selected by viewport width; the existing two-player iPad layout remains in use on wider screens.
 - **Live Two-Player Scorecard**: Tracks CP, Crit Op, Kill Op (via operatives remaining thresholds), Tac Op, and Total VP for left and right players.
-- **CSV/JSON-Driven Operatives**: Automatically resolves starting non-expendable operative counts per Kill Team from `data/starting-kill-grade.json`. Single-count teams auto-select; multi-option teams present a dropdown defaulting to placeholder.
+- **JSON-Driven Operatives**: Automatically resolves starting non-expendable operative counts per Kill Team from `data/starting-kill-grade.json`. Single-count teams auto-select; multi-option teams open a picker popup with the first count preselected, and a compact count button beside the team selector can reopen it later.
 - **Shared Crit Op Selector**: A single centered dropdown (sourced from `data/crit-ops.json`) records the mission's Crit Op name once, shared between both players.
 - **Tac Op Archetype Styling**: Colors Tac Op dropdown options according to archetype (Dark Blue for Security, Dark Red for Seek and Destroy, Dark Orange for Recon, Charcoal for Infiltration).
 - **Progressive Modifier Tracking**: Modifier checkboxes for Re-Roll and dice modifiers (-/+ 1, -/+ 2, -/+ 3) unlocking progressively by Turning Point (TP 0: Re-Roll only; TP 1: -/+ 1; TP 2: -/+ 2; TP 3+: -/+ 3).
