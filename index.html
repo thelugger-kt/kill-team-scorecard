@@ -249,11 +249,11 @@
       .setup-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: repeat(4, auto); gap: 8px 4px; padding: 10px; }
       .team-setup-left { grid-row: 1; grid-column: 1 / 4; }
       .team-setup-right { grid-row: 1; grid-column: 4 / 7; }
-      .modifier-controls { grid-row: 4; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+      .modifier-controls { grid-row: 4; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, auto); gap: 8px 10px; justify-content: center; }
       .modifier-controls-left { grid-column: 1 / 4; }
       .modifier-controls-right { grid-column: 4 / 7; }
-      .modifier-control { grid-template-rows: 36px 16px; font-size: 9px; letter-spacing: 0.02em; }
-      .modifier-control input { width: 34px; height: 34px; }
+      .modifier-control { grid-template-rows: 46px 16px; font-size: 9px; letter-spacing: 0.02em; }
+      .modifier-control input { width: 46px; height: 46px; }
       .initiative-left { grid-row: 2; grid-column: 1 / 3; justify-self: center; }
       .initiative-label { grid-row: 2; grid-column: 3 / 5; }
       .initiative-right { grid-row: 2; grid-column: 5 / 7; justify-self: center; }
@@ -340,6 +340,10 @@
         </div>
       </div>
 
+      <div class="layout-row primary-row">
+        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><select id="crit-op-select" class="crit-op-select" aria-label="Crit Op"></select><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
+      </div>
+
       <div class="layout-row cp-row" data-side="left">
         <div class="score-buttons left-buttons"><button class="icon-button" type="button" data-score-change="cp" data-change="-1" aria-label="Decrease left CP">−</button><button class="icon-button" type="button" data-score-change="cp" data-change="1" aria-label="Increase left CP">+</button></div>
         <output class="grid-score score-left" data-player="left" data-score="cp">0</output><span class="center-label">CP</span><output class="grid-score score-right" data-player="right" data-score="cp">0</output>
@@ -362,10 +366,6 @@
         <select class="tac-select-left" data-op="tac" data-player="left" aria-label="Left Tac Op"></select><div class="score-buttons tac-buttons-left" data-side="left"><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease left Tac Op">−</button><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase left Tac Op">+</button></div>
         <output class="grid-score score-left" data-player="left" data-score="tac">0</output><span class="center-label">Tac Op</span><output class="grid-score score-right" data-player="right" data-score="tac">0</output>
         <div class="score-buttons tac-buttons-right" data-side="right"><button class="icon-button" type="button" data-score-change="tac" data-change="1" aria-label="Increase right Tac Op">+</button><button class="icon-button" type="button" data-score-change="tac" data-change="-1" aria-label="Decrease right Tac Op">−</button></div><select class="tac-select-right" data-op="tac" data-player="right" aria-label="Right Tac Op"></select>
-      </div>
-
-      <div class="layout-row primary-row">
-        <select class="primary-operation primary-select-left" data-op="primary" data-player="left" aria-label="Left Primary Op"><option value="">Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select><select id="crit-op-select" class="crit-op-select" aria-label="Crit Op"></select><select class="primary-operation primary-select-right" data-op="primary" data-player="right" aria-label="Right Primary Op"><option value="">Primary Op</option><option value="crit">Crit Op</option><option value="kill">Kill Op</option><option value="tac">Tac Op</option></select>
       </div>
 
       <div class="layout-row totals">
