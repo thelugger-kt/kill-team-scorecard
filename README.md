@@ -4,6 +4,8 @@ A responsive two-player Kill Team scorecard optimized for horizontal iPad play a
 
 ## Features
 
+- **Phone Layout**: Narrow screens show a Left/Right player switch for team, operative, modifier, Tac Op, and Primary Op controls while keeping both players' CP, Crit Op, Kill Op, Tac Op, and Total VP visible.
+- **iPad Layout Preserved**: The phone layout is selected by viewport width; the existing two-player iPad layout remains in use on wider screens.
 - **Live Two-Player Scorecard**: Tracks CP, Crit Op, Kill Op (via operatives remaining thresholds), Tac Op, and Total VP for left and right players.
 - **CSV/JSON-Driven Operatives**: Automatically resolves starting non-expendable operative counts per Kill Team from `data/starting-kill-grade.json`. Single-count teams auto-select; multi-option teams present a dropdown defaulting to placeholder.
 - **Shared Crit Op Selector**: A single centered dropdown (sourced from `data/crit-ops.json`) records the mission's Crit Op name once, shared between both players.
