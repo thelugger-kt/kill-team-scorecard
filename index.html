@@ -162,7 +162,6 @@
     .turning-minus { grid-row: 2; grid-column: 1; }
     .turning-value { grid-row: 2; grid-column: 2; }
     .turning-plus { grid-row: 2; grid-column: 3; }
-    .turning-plus.end-battle { font-size: 9px; letter-spacing: 0.08em; }
     .modifier-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; grid-row: 2; align-self: stretch; }
     .modifier-controls-left { grid-column: 1 / 4; }
     .modifier-controls-right { grid-column: 7 / 10; }
@@ -216,7 +215,6 @@
       .counter { gap: 3px; }
       .counter-value { min-width: 25px; font-size: 42px; }
       .counter .icon-button { width: 27px; height: 27px; font-size: 16px; }
-      .turning-plus.end-battle { font-size: 7px; }
       .modifier-controls { gap: 2px; }
       .modifier-control { grid-template-rows: 27px 16px; font-size: 8px; letter-spacing: 0.02em; }
       .modifier-control input { width: 27px; height: 27px; }
@@ -391,7 +389,6 @@
   <script>
     const state = {
       turningPoint: 0,
-      battleEnded: false,
       initiative: 'left',
       critOp: '',
       left: { team: '', startingOperatives: '', operativesRemaining: 0, modifiers: { reroll: false, one: false, two: false, three: false }, scores: { cp: 3, crit: 0, tac: 0 }, tacOp: '', primary: '' },
@@ -459,7 +456,6 @@
 
     const urlKeys = {
       turningPoint: 'tp',
-      battleEnded: 'battleEnded',
       initiative: 'initiative',
       critOp: 'critOp',
       left: { team: 'leftTeam', operativesRemaining: 'leftRemaining', kill: 'leftKill', cp: 'leftCp', crit: 'leftCrit', tac: 'leftTac', total: 'leftTotal', tacOp: 'leftTacOp', primary: 'leftPrimary' },
@@ -531,9 +527,7 @@
     function readUrlState() {
       const params = new URLSearchParams(window.location.search);
       if (!window.location.search) return;
-      const legacyBattleEnded = Number(params.get(urlKeys.turningPoint)) >= 5;
       state.turningPoint = Math.max(0, Math.min(4, Number(params.get(urlKeys.turningPoint)) || 0));
-      state.battleEnded = legacyBattleEnded || params.get(urlKeys.battleEnded) === 'true';
       state.initiative = params.get(urlKeys.initiative) === 'right' ? 'right' : 'left';
       state.critOp = params.get(urlKeys.critOp) || '';
       ['left', 'right'].forEach((player) => {
@@ -554,7 +548,6 @@
       const params = new URLSearchParams();
       params.set('game', gameName);
       params.set(urlKeys.turningPoint, state.turningPoint);
-      if (state.battleEnded) params.set(urlKeys.battleEnded, 'true');
       params.set(urlKeys.initiative, state.initiative);
       if (state.critOp) params.set(urlKeys.critOp, state.critOp);
       ['left', 'right'].forEach((player) => {
@@ -597,7 +590,7 @@
     function killOpScore(player) {
       const otherPlayer = player === 'left' ? 'right' : 'left';
       const rawScore = rawKillOpScore(player);
-      const bonus = state.battleEnded && rawScore > rawKillOpScore(otherPlayer) ? 1 : 0;
+      const bonus = state.turningPoint === 4 && rawScore > rawKillOpScore(otherPlayer) ? 1 : 0;
       return Math.min(6, rawScore + bonus);
     }
 
@@ -611,11 +604,8 @@
     function render(share = true) {
       $('#turning-point-value').textContent = state.turningPoint;
       const turningPlus = $('.turning-plus');
-      const isFinalTurningPoint = state.turningPoint === 4;
-      turningPlus.textContent = isFinalTurningPoint ? 'END' : '+';
-      turningPlus.setAttribute('aria-label', isFinalTurningPoint ? 'End battle' : 'Increase turning point');
-      turningPlus.classList.toggle('end-battle', isFinalTurningPoint);
-      turningPlus.disabled = state.battleEnded;
+      const battleEnded = state.turningPoint === 4;
+      turningPlus.disabled = battleEnded;
       $$('[data-initiative]').forEach((button) => button.classList.toggle('active', button.dataset.initiative === state.initiative));
       $('#crit-op-select').value = state.critOp;
       ['left', 'right'].forEach((player) => {
@@ -633,13 +623,13 @@
         $(`[data-score="cp"][data-player="${player}"]`).textContent = state[player].scores.cp;
         $(`[data-total="${player}"]`).textContent = calculateTotal(player);
         $(`[data-op="primary"][data-player="${player}"]`).value = state[player].primary;
-        $(`[data-op="primary"][data-player="${player}"]`).disabled = !state.battleEnded;
-        $(`[data-op="primary"][data-player="${player}"]`).setAttribute('aria-hidden', String(!state.battleEnded));
+        $(`[data-op="primary"][data-player="${player}"]`).disabled = !battleEnded;
+        $(`[data-op="primary"][data-player="${player}"]`).setAttribute('aria-hidden', String(!battleEnded));
         populateTacOp(player);
       });
       const leftTotal = calculateTotal('left');
       const rightTotal = calculateTotal('right');
-      const revealWinner = state.battleEnded;
+      const revealWinner = battleEnded;
       $('[data-total="left"]').classList.toggle('winner', revealWinner && leftTotal >= rightTotal);
       $('[data-total="right"]').classList.toggle('winner', revealWinner && rightTotal >= leftTotal);
       writeUrlState();
@@ -660,7 +650,6 @@
     function resetGame() {
       if (!window.confirm('Reset both players and clear the current scorecard?')) return;
       state.turningPoint = 0;
-      state.battleEnded = false;
       state.initiative = 'left';
       state.critOp = '';
       ['left', 'right'].forEach((player) => { state[player].team = ''; state[player].startingOperatives = ''; state[player].operativesRemaining = 0; state[player].tacOp = ''; state[player].primary = ''; Object.keys(state[player].modifiers).forEach((modifier) => { state[player].modifiers[modifier] = false; }); Object.keys(state[player].scores).forEach((score) => { state[player].scores[score] = score === 'cp' ? 3 : 0; }); });
@@ -702,12 +691,7 @@
     document.addEventListener('click', (event) => {
       const counterButton = event.target.closest('[data-counter]');
       if (counterButton) {
-        if (counterButton.dataset.counter === 'turningPoint' && state.turningPoint === 4 && Number(counterButton.dataset.change) > 0) {
-          state.battleEnded = true;
-        } else {
-          state[counterButton.dataset.counter] = Math.max(0, Math.min(4, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
-          if (counterButton.dataset.counter === 'turningPoint') state.battleEnded = false;
-        }
+        state[counterButton.dataset.counter] = Math.max(0, Math.min(4, state[counterButton.dataset.counter] + Number(counterButton.dataset.change)));
       }
       const scoreButton = event.target.closest('[data-score-change]');
       if (scoreButton) { const side = scoreButton.closest('[data-side]').dataset.side; const score = scoreButton.dataset.scoreChange; if (score === 'remaining') { const maximum = Number(state[side].startingOperatives) || 0; state[side].operativesRemaining = Math.max(0, Math.min(maximum, state[side].operativesRemaining + Number(scoreButton.dataset.change))); } else { const maximum = score === 'cp' ? 12 : 6; state[side].scores[score] = Math.max(0, Math.min(maximum, state[side].scores[score] + Number(scoreButton.dataset.change))); } }
