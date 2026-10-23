@@ -13,6 +13,7 @@ A responsive two-player Kill Team scorecard optimized for horizontal iPad play a
 - **Progressive Modifier Tracking**: Modifier checkboxes for Re-Roll and dice modifiers (-/+ 1, -/+ 2, -/+ 3) unlocking progressively by Turning Point (TP 0: Re-Roll only; TP 1: -/+ 1; TP 2: -/+ 2; TP 3+: -/+ 3).
 - **Battle Flow & End Game**: Turning Point progresses from 0 to 4. At TP 4, the `+` button transitions to `END`, unlocking Primary Op selection, computing final kill op bonuses, and declaring the winner.
 - **Live PeerJS Synchronization**: Real-time peer-to-peer state synchronization across multiple browsers connected to the same game ID.
+- **Peer Recovery**: Scorecard tabs reconnect to PeerJS after signaling interruptions and retry room discovery every 3 seconds if the host cannot be reached.
 - **URL-Encoded State for OBS**: Fully serializes game state to query parameters on every update, allowing streaming tools like OBS Browser Source to capture live scoreboard snapshots.
 - **Integrated Action Controls**: "New game" (creates fresh isolated match) and "Reset game" buttons integrated into the Total VP row.
 

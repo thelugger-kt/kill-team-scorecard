@@ -399,7 +399,7 @@
     let critOps = [];
     let killGrades = {};
     let startingKillGrades = {};
-    const sync = { peer: null, host: false, connections: [], connection: null };
+    const sync = { peer: null, host: false, connections: [], connection: null, retryTimer: null, openTimer: null };
     const params = new URLSearchParams(window.location.search);
     const createGameId = () => `match-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const gameName = params.get('game') || createGameId();
@@ -415,6 +415,44 @@
       const error = $('#error-message');
       error.textContent = message;
       error.classList.add('visible');
+    }
+
+    function clearSyncError() {
+      const error = $('#error-message');
+      if (!error.textContent.startsWith('Live sync')) return;
+      error.textContent = '';
+      error.classList.remove('visible');
+    }
+
+    function watchPeerOpen(peer) {
+      if (sync.openTimer !== null) return;
+      sync.openTimer = window.setTimeout(() => {
+        sync.openTimer = null;
+        retrySync(peer, new Error('The PeerJS signaling connection did not open in time.'));
+      }, 10000);
+    }
+
+    function clearPeerOpenTimer() {
+      if (sync.openTimer === null) return;
+      window.clearTimeout(sync.openTimer);
+      sync.openTimer = null;
+    }
+
+    function retrySync(peer, error) {
+      if (!peer || sync.peer !== peer) return;
+      console.error(error);
+      clearPeerOpenTimer();
+      sync.peer = null;
+      sync.host = false;
+      sync.connection = null;
+      sync.connections = [];
+      peer.destroy();
+      showError('Live sync connection lost. Retrying in 3 seconds.');
+      if (sync.retryTimer !== null) return;
+      sync.retryTimer = window.setTimeout(() => {
+        sync.retryTimer = null;
+        initializeSync();
+      }, 3000);
     }
 
     function populateTeamOptions() {
@@ -486,6 +524,7 @@
 
     function handleConnection(connection) {
       connection.on('open', () => {
+        clearSyncError();
         if (sync.host) {
           sync.connections.push(connection);
           sendState(connection);
@@ -501,26 +540,72 @@
       });
       connection.on('close', () => {
         sync.connections = sync.connections.filter((item) => item !== connection);
-        if (sync.connection === connection) sync.connection = null;
+        if (sync.connection === connection) {
+          sync.connection = null;
+          retrySync(sync.peer, new Error('The scorecard host connection closed.'));
+        }
+      });
+      connection.on('error', (error) => {
+        if (sync.host) {
+          sync.connections = sync.connections.filter((item) => item !== connection);
+          console.error(error);
+          showError(`Live sync connection error (${error.type || 'unknown'}).`);
+          return;
+        }
+        retrySync(sync.peer, error);
       });
     }
 
     function initializeSync() {
-      if (!window.Peer) return;
+      if (!window.Peer || sync.peer || sync.retryTimer !== null) return;
       const hostPeer = new Peer(hostPeerId);
+      sync.peer = hostPeer;
+      watchPeerOpen(hostPeer);
+      hostPeer.on('connection', handleConnection);
+      hostPeer.on('disconnected', () => {
+        if (sync.peer !== hostPeer) return;
+        showError('Live sync signaling disconnected. Reconnecting.');
+        watchPeerOpen(hostPeer);
+        hostPeer.reconnect();
+      });
       hostPeer.on('open', () => {
+        if (sync.peer !== hostPeer) return;
+        clearPeerOpenTimer();
         sync.peer = hostPeer;
         sync.host = true;
-        hostPeer.on('connection', handleConnection);
+        clearSyncError();
       });
       hostPeer.on('error', (error) => {
-        if (error.type !== 'unavailable-id') return;
+        if (sync.peer !== hostPeer) return;
+        if (error.type !== 'unavailable-id') {
+          retrySync(hostPeer, error);
+          return;
+        }
+        sync.host = false;
+        clearPeerOpenTimer();
         hostPeer.destroy();
         const clientPeer = new Peer();
-        clientPeer.on('open', () => {
-          sync.peer = clientPeer;
-          handleConnection(clientPeer.connect(hostPeerId));
+        sync.peer = clientPeer;
+        watchPeerOpen(clientPeer);
+        let clientConnectionStarted = false;
+        clientPeer.on('disconnected', () => {
+          if (sync.peer !== clientPeer) return;
+          showError('Live sync signaling disconnected. Reconnecting.');
+          watchPeerOpen(clientPeer);
+          clientPeer.reconnect();
         });
+        clientPeer.on('open', () => {
+          if (sync.peer !== clientPeer) return;
+          clearPeerOpenTimer();
+          clearSyncError();
+          if (clientConnectionStarted) return;
+          clientConnectionStarted = true;
+          sync.peer = clientPeer;
+          const connection = clientPeer.connect(hostPeerId);
+          sync.connection = connection;
+          handleConnection(connection);
+        });
+        clientPeer.on('error', (clientError) => retrySync(clientPeer, clientError));
       });
     }
 

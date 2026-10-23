@@ -58,9 +58,9 @@ The app automatically synchronizes score and match state to URL query parameters
 - **Backward Compatibility**: Handles legacy URLs where `tp >= 5` by interpreting them as `tp = 4` with `battleEnded = true`.
 
 ### 3. P2P Live Synchronization (PeerJS)
-- The app uses PeerJS with room ID convention `kt-scorecard-${gameName}`.
-- The first client to connect on a `game` ID claims the host role (`sync.host = true`).
-- Subsequent clients connect to the host and receive state updates automatically on any change.
+- The app uses PeerJS with room ID convention `kill-team-scorecard-${roomSlug}-${roomHash}`, derived from the `game` query parameter.
+- The first client to register that room ID claims the host role (`sync.host = true`); subsequent clients connect to it and receive state updates automatically on any change.
+- Signaling disconnections reconnect through PeerJS. Failed client connections restart room discovery after 3 seconds, allowing an open client to claim the host role if the previous host is gone.
 
 ---
 
