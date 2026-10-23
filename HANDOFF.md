@@ -53,13 +53,14 @@ const state = {
 ### 2. URL State Encoding (`writeUrlState` / `readUrlState`)
 The app automatically synchronizes score and match state to URL query parameters on every mutation.
 
-- **Included in URL**: `game`, `tp`, `battleEnded`, `initiative`, `critOp`, `leftTeam`, `rightTeam`, `leftRemaining`, `rightRemaining`, `leftKill`, `rightKill`, `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftTotal`, `rightTotal`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`.
+- **Included in URL**: `game`, `tp`, `initiative`, `critOp`, `leftTeam`, `rightTeam`, `leftRemaining`, `rightRemaining`, `leftKill`, `rightKill`, `leftCp`, `rightCp`, `leftCrit`, `rightCrit`, `leftTac`, `rightTac`, `leftTotal`, `rightTotal`, `leftTacOp`, `rightTacOp`, `leftPrimary`, `rightPrimary`.
 - **Intentionally excluded from URL**: `startingOperatives` and `modifiers` (only synced live via PeerJS to keep URL clean and focused on stream/score overlays).
-- **Backward Compatibility**: Handles legacy URLs where `tp >= 5` by interpreting them as `tp = 4` with `battleEnded = true`.
+- **Backward Compatibility**: Legacy URLs with `tp >= 5` are clamped to `tp = 4`. End-of-battle effects apply at `tp = 4`.
 
 ### 3. P2P Live Synchronization (PeerJS)
 - The app uses PeerJS with room ID convention `kill-team-scorecard-${roomSlug}-${roomHash}`, derived from the `game` query parameter.
 - The first client to register that room ID claims the host role (`sync.host = true`); subsequent clients connect to it and receive state updates automatically on any change.
+- PeerJS snapshots include a `battleEnded` boolean derived from `turningPoint === 4` for Gamecast compatibility. This field is not part of the URL state.
 - Signaling disconnections reconnect through PeerJS. Failed client connections restart room discovery after 3 seconds, allowing an open client to claim the host role if the previous host is gone.
 
 ---

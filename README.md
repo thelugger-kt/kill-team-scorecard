@@ -46,7 +46,6 @@ The scorecard automatically keeps the URL query string updated with the current 
 |-----------|-------------|
 | `game` | Unique room/match identifier used for PeerJS connection |
 | `tp` | Current Turning Point (`0` - `4`) |
-| `battleEnded` | Present and set to `'true'` when the game has ended |
 | `initiative` | Current player with initiative (`left` or `right`) |
 | `critOp` | Selected shared Crit Op name |
 | `leftTeam` / `rightTeam` | Selected Kill Team name |
@@ -58,6 +57,10 @@ The scorecard automatically keeps the URL query string updated with the current 
 | `leftTotal` / `rightTotal` | Total calculated Victory Points (VP) |
 | `leftTacOp` / `rightTacOp` | Selected Tac Op name |
 | `leftPrimary` / `rightPrimary` | Selected Primary Op category (`crit`, `kill`, `tac`) |
+
+Legacy URLs with `tp` greater than `4` are treated as TP `4`. The live PeerJS
+state includes a `battleEnded` boolean derived from whether TP is `4`; it is
+not written to the URL.
 
 ### OBS Browser Source
 
